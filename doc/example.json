@@ -1,15 +1,35 @@
 {
-  "isFull": false,
+  "isFull": true,
   "list": [
     {
-      "title": "这里填写示例标题",
-      "description": "这里填写示例说明",
+      "title": "加载一个模块",
+      "description": "加载一个模块",
       "code": "./base.js",
-      "scope": [],
-      "__scope_notes": {
-        "name": "这里填写包导出名称(这是一个注释字段，需要添加到[scope]中)",
-        "packageName": "这里填写包名(这是一个注释字段，需要添加到[scope]中)"
-      }
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        },
+        {
+          "name": "reactRouter",
+          "packageName": "react-router-dom"
+        }
+      ]
+    },
+    {
+      "title": "加载一个子模块",
+      "description": "加载一个子模块",
+      "code": "./module.js",
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        },
+        {
+          "name": "reactRouter",
+          "packageName": "react-router-dom"
+        }
+      ]
     }
   ]
 }

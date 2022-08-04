@@ -1,3 +1,5 @@
+import 'antd/dist/antd.css';
+import '@kne/react-form-antd/dist/index.css';
 import {useEffect} from 'react';
 import ExampleDriver from '@kne/example-driver';
 import readme from './readme';

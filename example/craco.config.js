@@ -4,6 +4,7 @@ const {parse} = require('@kne/md-doc');
 const get = require('lodash/get');
 const uniqueId = require('lodash/uniqueId');
 const spawn = require('cross-spawn-promise');
+const CracoModuleFederation = require('craco-module-federation');
 
 const createJsTemplate = async (readme) => {
     const list = get(readme, 'example.list') || [];
@@ -98,6 +99,9 @@ module.exports = {
     plugins: [
         {
             plugin: ReadmePlugin
+        },
+        {
+            plugin: CracoModuleFederation,
         }
     ]
 };

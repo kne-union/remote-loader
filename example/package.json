@@ -8,7 +8,15 @@
     "test": "craco test"
   },
   "dependencies": {
-    "@kne/example-driver": "^0.1.0"
+    "@ant-design/icons": "^4.7.0",
+    "@kne/example-driver": "^0.1.0",
+    "@kne/react-form-antd": "^2.1.34",
+    "@kne/remote-loader": "file:..",
+    "antd": "^4.22.3",
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom",
+    "react-router-dom": "^6.3.0",
+    "remote-loader": "file:.."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -23,8 +31,13 @@
     "@craco/craco": "^6.4.5",
     "@kne/md-doc": "^0.1.6",
     "chokidar": "^3.5.3",
+    "craco-module-federation": "^1.1.0",
     "cross-spawn-promise": "^0.10.2",
     "fs-extra": "^10.1.0",
+    "node-sass": "^7.0.1",
     "react-scripts": "^5.0.1"
+  },
+  "syntax": {
+    "esmodules": true
   }
 }
