@@ -3,12 +3,12 @@ const { BrowserRouter } = reactRouter;
 
 const BaseExample = () => {
   return <BrowserRouter>
-    <Remote loader={{
+    <Remote remoteLoader={{
       remote: "ui_components",
       url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js",
       module: "Account@OuterContainer"
     }}>
-      <Remote loader={{
+      <Remote remoteLoader={{
         remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "Account@Login"
       }} />
     </Remote>

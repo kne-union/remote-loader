@@ -13,6 +13,9 @@
         {
           "name": "reactRouter",
           "packageName": "react-router-dom"
+        },{
+          "name": "_",
+          "packageName": "lodash"
         }
       ]
     },
