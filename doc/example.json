@@ -13,7 +13,8 @@
         {
           "name": "reactRouter",
           "packageName": "react-router-dom"
-        },{
+        },
+        {
           "name": "_",
           "packageName": "lodash"
         }
@@ -31,6 +32,32 @@
         {
           "name": "reactRouter",
           "packageName": "react-router-dom"
+        }
+      ]
+    },
+    {
+      "title": "高阶组件批量加载组件",
+      "description": "高阶组件批量加载组件",
+      "code": "./hoc.js",
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        },
+        {
+          "name": "reactRouter",
+          "packageName": "react-router-dom"
+        }
+      ]
+    },
+    {
+      "title": "加载一个属性模块",
+      "description": "加载一个属性模块",
+      "code": "./sub-module.js",
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
         }
       ]
     }
