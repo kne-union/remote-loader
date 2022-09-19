@@ -1,11 +1,10 @@
 import preset, { global } from "./preset";
-import React, { useMemo, forwardRef, useEffect, useState } from "react";
+import React, { useMemo, forwardRef, useEffect, useState, useRef } from "react";
 import { loadComponent } from "./loadComponent";
 import useRefCallback from "@kne/use-ref-callback";
-import { merge } from "lodash";
+import { merge, constant } from "lodash";
 
 const parseModule = (module) => {
-
   const [pathStr, nameStr] = module.split("@");
   let moduleName = "default", subModuleName, modulePath;
   if (nameStr) {
@@ -21,17 +20,12 @@ const parseModule = (module) => {
   };
 };
 
-export const loadModule = ({ remote, module, url, onLoadComplete }) => {
+export const loadModule = ({ remote, module, url }) => {
   const { modulePath, moduleName, subModuleName } = parseModule(module);
   return () => loadComponent(remote, "default", modulePath, url)().then((module) => {
     const Component = subModuleName ? module[moduleName][subModuleName] : module[moduleName];
     return {
-      default: forwardRef((props, ref) => {
-        useEffect(() => {
-          onLoadComplete && onLoadComplete();
-        }, []);
-        return <Component ref={ref} {...props} />;
-      })
+      default: Component
     };
   });
 };
@@ -50,51 +44,24 @@ const useLoader = ({ modules, remoteLoader, onLoadComplete }) => {
     }
 
     return Promise.all(moduleList.map((module) => loadModule({
-      remote, module, url, onLoadComplete: loadComplete
-    })()));
+      remote, module, url
+    })())).then((modules) => {
+      onLoadComplete && onLoadComplete(modules);
+      return modules;
+    });
 
   }, [remote, loaderModule, modules, url, loadComplete]);
 };
 
-
-const RemoteLoader = forwardRef((props, ref) => {
-  const {
-    module: propsModule,
-    remoteLoader,
-    fallback,
-    remoteError,
-    onLoadComplete,
-    ...others
-  } = props;
-
-  const propsModuleList = useMemo(() => [propsModule], [propsModule]);
-
-  const loaderPromise = useLoader({ modules: propsModuleList, remoteLoader, onLoadComplete });
-
-  const Component = useMemo(() => {
-    return React.lazy(() => loaderPromise.then((componentList) => {
-      if (!componentList[0]) {
-        return { default: () => (remoteError || global.error) };
-      }
-      return componentList[0];
-    }));
-  }, [loaderPromise]);
-
-  return (
-    <React.Suspense fallback={fallback || global.fallback}>
-      <Component {...others} ref={ref} />
-    </React.Suspense>
-  );
-});
-
-export default RemoteLoader;
-
 export const withRemoteLoader = (WrappedComponent) => {
-  return forwardRef(({ modules, remoteLoader, remoteError, onLoadComplete, fallback, ...props }, ref) => {
+  return forwardRef(({ modules, module, remoteLoader, remoteError, onLoadComplete, fallback, ...props }, ref) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [remotes, setRemotes] = useState([]);
-    const loaderPromise = useLoader({ modules, remoteLoader, remoteError, onLoadComplete });
+    const moduleMemo = useMemo(() => {
+      return [module];
+    }, [module]);
+    const loaderPromise = useLoader({ modules: modules || moduleMemo, remoteLoader, remoteError, onLoadComplete });
     useEffect(() => {
       loaderPromise.then((modules) => {
         setRemotes(modules.map((module) => {
@@ -120,5 +87,12 @@ export const createWithRemoteLoader = (params) => (WrappedComponent) => {
   const RemoteComponent = withRemoteLoader(WrappedComponent);
   return forwardRef((props, ref) => <RemoteComponent {...merge({}, params, props)} ref={ref} />);
 };
+
+const RemoteLoader = withRemoteLoader(forwardRef(({ remoteModules, ...others }, ref) => {
+  const [Component] = remoteModules;
+  return <Component {...others} ref={ref} />;
+}));
+
+export default RemoteLoader;
 
 export { preset };

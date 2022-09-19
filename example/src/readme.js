@@ -1,6 +1,6 @@
-import * as component_71 from '@kne/remote-loader';
-import * as component_72 from 'react-router-dom';
-import * as component_73 from 'lodash';
+import * as component_28 from '@kne/remote-loader';
+import * as component_29 from 'react-router-dom';
+import * as component_30 from 'lodash';
 const readmeConfig = {
     name: `@kne/remote-loader`,
     description: `加载一个webpack5生成的邦联模块`,
@@ -53,6 +53,7 @@ const readmeConfig = {
 </table>
 <p>其他属性将传给远程组件</p>
 <h4>withRemoteLoader</h4>
+<p>注意: 推荐使用createWithRemoteLoader，如果必须使用该高阶组件请将modules参数包裹在useMemo里面或者放在组件外边，防止由于其父组件render导致其引用地址发生变化触发不必要的render</p>
 <p>withRemoteLoader(WrappedComponent)</p>
 <table>
 <thead>
@@ -161,15 +162,15 @@ render(<BaseExample />);
     scope: [{
     name: "remoteLoader",
     packageName: "@kne/remote-loader",
-    component: component_71
+    component: component_28
 },{
     name: "reactRouter",
     packageName: "react-router-dom",
-    component: component_72
+    component: component_29
 },{
     name: "_",
     packageName: "lodash",
-    component: component_73
+    component: component_30
 }]
 },{
     title: `加载一个子模块`,
@@ -197,11 +198,11 @@ render(<BaseExample />);
     scope: [{
     name: "remoteLoader",
     packageName: "@kne/remote-loader",
-    component: component_71
+    component: component_28
 },{
     name: "reactRouter",
     packageName: "react-router-dom",
-    component: component_72
+    component: component_29
 }]
 },{
     title: `高阶组件批量加载组件`,
@@ -227,11 +228,11 @@ render(<BaseExample />);
     scope: [{
     name: "remoteLoader",
     packageName: "@kne/remote-loader",
-    component: component_71
+    component: component_28
 },{
     name: "reactRouter",
     packageName: "react-router-dom",
-    component: component_72
+    component: component_29
 }]
 },{
     title: `加载一个属性模块`,
@@ -275,7 +276,7 @@ render(<BaseExample />);
     scope: [{
     name: "remoteLoader",
     packageName: "@kne/remote-loader",
-    component: component_71
+    component: component_28
 }]
 }]
     }
