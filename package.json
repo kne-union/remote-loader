@@ -1,7 +1,7 @@
 {
   "name": "@kne/remote-loader",
   "author": "linzp",
-  "version": "0.1.13-alpha.0",
+  "version": "0.1.13",
   "description": "加载一个webpack5生成的邦联模块",
   "dependencies": {
     "@kne/use-ref-callback": "^0.1.2",
