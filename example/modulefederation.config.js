@@ -33,6 +33,10 @@ module.exports = {
             singleton: true,
             requiredVersion: dependencies['@kne/remote-loader'],
             eager: true
+        },
+        "lodash":{
+            requiredVersion: dependencies['lodash'],
+            eager: true
         }
     },
 };

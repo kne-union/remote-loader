@@ -38,7 +38,7 @@ const createJsTemplate = async (readme) => {
         }
         if (!await fs.exists(`./node_modules/${packageName}`)) {
             console.log(`>>>>>开始自动安装包${packageName}>>>>>>`);
-            await spawn('npm', ['i', packageName, '--save'], {stdio: 'inherit'}).then(() => {
+            await spawn('pnpm', ['i', packageName, '--save'], {stdio: 'inherit'}).then(() => {
                 console.log(`<<<<<<<<<<包${packageName}安装完成<<<<<<<<`);
             }, (e) => {
                 console.log(e);
