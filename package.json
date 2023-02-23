@@ -1,9 +1,10 @@
 {
   "name": "@kne/remote-loader",
   "author": "linzp",
-  "version": "0.1.13",
+  "version": "1.0.0",
   "description": "加载一个webpack5生成的邦联模块",
   "dependencies": {
+    "@kne/ensure-slash": "^0.1.0",
     "@kne/use-ref-callback": "^0.1.2",
     "lodash": "^4.17.21"
   },
@@ -13,17 +14,13 @@
   "scripts": {
     "start": "run-p start:lib start:md start:example",
     "build": "run-s build:lib build:md build:example",
-    "test": "run-s test:unit test:lint test:build",
+    "test": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "init": "cd example &&npm i --legacy-peer-deps && node scripts/init.js",
     "build:lib": "microbundle --no-compress --format modern,cjs --jsx React.createElement --jsxFragment React.Fragment",
     "build:md": "create-md",
     "start:md": "create-md --watch",
     "start:lib": "microbundle watch --no-compress --format modern,cjs --jsx React.createElement --jsxFragment React.Fragment",
-    "test:build": "run-s build",
-    "test:lint": "eslint .",
-    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
     "build:example": "cd example && npm run build",
     "start:example": "cd example && npm run start",
     "deploy": "gh-pages -d example/build",
@@ -69,16 +66,20 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.21.0",
     "@kne/md-doc": "^0.1.7",
     "@kne/microbundle": "^0.15.2",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
     "cross-env": "^7.0.3",
     "gh-pages": "^3.2.3",
     "husky": "^7.0.4",
     "node-sass": "^7.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
+    "pretty": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "^5.0.1"
   }
 }

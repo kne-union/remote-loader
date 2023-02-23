@@ -1,18 +1,20 @@
-const { default: Remote } = remoteLoader;
-const { BrowserRouter } = reactRouter;
+const {default: Remote, preset} = remoteLoader;
+const {BrowserRouter} = reactRouter;
+
+preset({
+    remotes: {
+        default: {
+            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
+        }
+    }
+});
 
 const BaseExample = () => {
-  return <BrowserRouter>
-    <Remote remoteLoader={{
-      remote: "ui_components",
-      url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js",
-      module: "Account@OuterContainer"
-    }}>
-      <Remote remoteLoader={{
-        remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "Account@Login"
-      }} />
-    </Remote>
-  </BrowserRouter>;
+    return <BrowserRouter>
+        <Remote module="Account@OuterContainer">
+            <Remote module="Account@Login"/>
+        </Remote>
+    </BrowserRouter>;
 };
 
-render(<BaseExample />);
+render(<BaseExample/>);

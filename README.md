@@ -44,82 +44,48 @@ npm i --save @kne/remote-loader
 - remoteLoader(@kne/remote-loader),reactRouter(react-router-dom),_(lodash)
 
 ```jsx
-const { default: Remote } = remoteLoader;
-const { BrowserRouter } = reactRouter;
-const { range } = _;
-const { useRef } = React;
+const {default: Remote, preset} = remoteLoader;
+const {range} = _;
 
 const BaseExample = () => {
-  const ref = useRef(null);
-  return <BrowserRouter>
-    <Remote remoteLoader={{
-      remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "Navigation"
-    }} isFixed={false}/>
-    <Remote ref={ref} remoteLoader={{
-      remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "TablePage"
-    }} onLoadComplete={()=>{
-      console.log(ref);
-    }} columns={[
-      {
-        title: "职位名称",
-        key: "positionName",
-        fixed: "left",
-        dataIndex: "positionName"
-      }, {
-        title: "客户名称",
-        key: "clientName",
-        dataIndex: "clientName"
-      }, {
-        title: "工作地点",
-        key: "city",
-        dataIndex: "city"
-      }, {
-        title: "职位开始时间",
-        key: "startTime",
-        dataIndex: "startTime"
-      }
-    ]} data={{ currentPage: 1, perPage: 20 }} loader={({ data }) => {
-      return {
-        pageData: range(data.perPage).map((index) => ({
-          id: index + (data.currentPage - 1) * data.perPage + 1,
-          positionName: "市场运营总监" + (index + (data.currentPage - 1) * data.perPage + 1),
-          clientName: "大众",
-          city: "北京",
-          startTime: "2020-01-10"
-        })),
-        totalCount: 100
-      };
-    }} />
-  </BrowserRouter>;
+    return <Remote module="http://ued.dev.fatalent.cn/ui_components:Global">
+        <Remote module="Content"
+                list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
+                    label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
+                }, {
+                    label: '标题标题标题',
+                    content: '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容'
+                }]}/>
+        <Remote module="http://ued.dev.fatalent.cn/ui_components:TablePage" columns={[{
+            title: '职位名称', key: 'positionName', fixed: 'left', dataIndex: 'positionName'
+        }, {
+            title: '客户名称', key: 'clientName', dataIndex: 'clientName'
+        }, {
+            title: '工作地点', key: 'city', dataIndex: 'city'
+        }, {
+            title: '职位开始时间', key: 'startTime', dataIndex: 'startTime'
+        }, {
+            title: '职位结束时间', key: 'endTime', dataIndex: 'endTime'
+        }]} data={{currentPage: 1, perPage: 10}} loader={({data}) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        pageData: range(data.perPage).map((index) => ({
+                            id: index + (data.currentPage - 1) * data.perPage + 1,
+                            positionName: "市场运营总监" + (index + (data.currentPage - 1) * data.perPage + 1),
+                            clientName: "大众",
+                            city: "北京",
+                            startTime: "2020-01-10",
+                            endTime: "2020-02-10"
+                        })), totalCount: 48
+                    });
+                }, 1000);
+            });
+        }}/>
+    </Remote>;
 };
 
-render(<BaseExample />);
-
-```
-
-- 加载一个子模块
-- 加载一个子模块
-- remoteLoader(@kne/remote-loader),reactRouter(react-router-dom)
-
-```jsx
-const { default: Remote } = remoteLoader;
-const { BrowserRouter } = reactRouter;
-
-const BaseExample = () => {
-  return <BrowserRouter>
-    <Remote remoteLoader={{
-      remote: "ui_components",
-      url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js",
-      module: "Account@OuterContainer"
-    }}>
-      <Remote remoteLoader={{
-        remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "Account@Login"
-      }} />
-    </Remote>
-  </BrowserRouter>;
-};
-
-render(<BaseExample />);
+render(<BaseExample/>);
 
 ```
 
@@ -128,38 +94,73 @@ render(<BaseExample />);
 - remoteLoader(@kne/remote-loader),reactRouter(react-router-dom)
 
 ```jsx
-const { createWithRemoteLoader } = remoteLoader;
-const { BrowserRouter } = reactRouter;
-const { useState, useEffect } = React;
+const {createWithRemoteLoader, preset} = remoteLoader;
+const {BrowserRouter} = reactRouter;
+const {useState, useEffect} = React;
+
+preset({
+    remotes: {
+        default: {
+            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
+        }
+    }
+});
 
 const BaseExample = createWithRemoteLoader({
-  remoteLoader: { remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js" },
-  modules: ["Account@OuterContainer", "Account@Login"]
-})(({ remoteModules, testProps }) => {
-  const [OuterContainer, Login] = remoteModules;
-  useEffect(()=>{
-    console.log('mount');
-  },[]);
-  console.log(testProps);
-  return <BrowserRouter>
-    <OuterContainer>
-      <Login />
-    </OuterContainer>
-  </BrowserRouter>;
+    modules: ["Account@OuterContainer", "Account@Login"]
+})(({remoteModules, testProps}) => {
+    const [OuterContainer, Login] = remoteModules;
+    useEffect(() => {
+        console.log('mount');
+    }, []);
+    console.log(testProps);
+    return <BrowserRouter>
+        <OuterContainer>
+            <Login/>
+        </OuterContainer>
+    </BrowserRouter>;
 });
 
 const Outer = () => {
-  const [value, setValue] = useState(false);
-  return <div>
-    <button onClick={() => {
-      setValue(!value);
-    }}>按钮
-    </button>
-    <BaseExample testProps={value} />
-  </div>;
+    const [value, setValue] = useState(false);
+    return <div>
+        <button onClick={() => {
+            setValue(!value);
+        }}>按钮
+        </button>
+        <BaseExample testProps={value}/>
+    </div>;
 };
 
-render(<Outer />);
+render(<Outer/>);
+
+```
+
+- 加载一个子模块
+- 加载一个子模块
+- remoteLoader(@kne/remote-loader),reactRouter(react-router-dom)
+
+```jsx
+const {default: Remote, preset} = remoteLoader;
+const {BrowserRouter} = reactRouter;
+
+preset({
+    remotes: {
+        default: {
+            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
+        }
+    }
+});
+
+const BaseExample = () => {
+    return <BrowserRouter>
+        <Remote module="Account@OuterContainer">
+            <Remote module="Account@Login"/>
+        </Remote>
+    </BrowserRouter>;
+};
+
+render(<BaseExample/>);
 
 ```
 
@@ -168,53 +169,60 @@ render(<Outer />);
 - remoteLoader(@kne/remote-loader)
 
 ```jsx
-const { default: Remote } = remoteLoader;
+const {default: Remote, preset} = remoteLoader;
+
+preset({
+    remotes: {
+        default: {
+            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
+        }
+    }
+});
 
 const BaseExample = () => {
-  return <Remote remoteLoader={{
-      remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "InfoPage"
-    }}>
-      <Remote remoteLoader={{
-        remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "InfoPage.Part"
-      }} title="退票信息">
-        <Remote remoteLoader={{
-          remote: "ui_components", url: "http://ued.dev.fatalent.cn/ui_components/remoteEntry.js", module: "TableInfo"
-        }} dataSource={[
-          [{ label: "客户名称", content: "腾讯" }, { label: "发票抬头", content: "腾讯科技公司" }],
-          [{ label: "发票类型", content: "增值税专用发票" }, { label: "发票开具日期", content: "2022-08-15" }],
-          [{ label: "退票金额", content: "22000.00元" }],
-          [{
-            label: "发票号", content: <div>
-              <div>00384895992774</div>
-              <div>00384895992774</div>
-              <div>00384895992774</div>
-              <div>00384895992774</div>
-            </div>
-          }],
-          [{ label: "是否需要重开发票", content: "否" }, { label: "是否涉及金融变动", content: "否" }],
-          [{ label: "是否造成实质损失", content: "否" }, { label: "责任归属", content: "客户原因" }],
-          [{ label: "退票原因", content: "退票原因的描述退票原因的描述退票原因的描" }],
-          [{ label: "附件", content: "附件名称" }],
-          [{ label: "操作时间", content: "2022-08-01 16:32" }, { label: "操作人", content: "西西歪" }]
-        ]}></Remote>
-      </Remote>
+    return <Remote module="InfoPage">
+        <Remote module="InfoPage.Part" title="退票信息">
+            <Remote module="TableInfo"
+                    dataSource={[[{label: "客户名称", content: "腾讯"}, {
+                        label: "发票抬头",
+                        content: "腾讯科技公司"
+                    }], [{label: "发票类型", content: "增值税专用发票"}, {
+                        label: "发票开具日期",
+                        content: "2022-08-15"
+                    }], [{label: "退票金额", content: "22000.00元"}], [{
+                        label: "发票号", content: <div>
+                            <div>00384895992774</div>
+                            <div>00384895992774</div>
+                            <div>00384895992774</div>
+                            <div>00384895992774</div>
+                        </div>
+                    }], [{label: "是否需要重开发票", content: "否"}, {
+                        label: "是否涉及金融变动",
+                        content: "否"
+                    }], [{label: "是否造成实质损失", content: "否"}, {
+                        label: "责任归属",
+                        content: "客户原因"
+                    }], [{label: "退票原因", content: "退票原因的描述退票原因的描述退票原因的描"}], [{
+                        label: "附件",
+                        content: "附件名称"
+                    }], [{label: "操作时间", content: "2022-08-01 16:32"}, {label: "操作人", content: "西西歪"}]]}/>
+        </Remote>
     </Remote>;
 };
 
-render(<BaseExample />);
+render(<BaseExample/>);
 
 ```
 
 
 ### API
 
-| 属性名          | 说明                                                                                         |类型| 默认值  |
-|--------------|--------------------------------------------------------------------------------------------| --- |------|
-| remoteLoader | 加载参数{remote,url,module}remote:远程module的name,url:远程入口文件的地址,module:远程模块名，格式为【模块名@子模块名.属性模块名】 |object| -    |
-| fallback     | 组件加载时渲染的loading组件                                                                          |jsx| null |
-| remoteError  | 组件加载失败时渲染的组件                                                                               |jsx|null|
-| module       | 等同于loader里传入module，为了更方便使用而设置。如果loader中存在module参数优先取loader的module                          |string|-|
-| onLoadComplete| 当组件加载完成并且mount完毕的时候调用该方法                                                                   |function|-|
+| 属性名          | 说明                                     |类型| 默认值  |
+|--------------|----------------------------------------| --- |------|
+| fallback     | 组件加载时渲染的loading组件                      |jsx| null |
+| remoteError  | 组件加载失败时渲染的组件                           |jsx|null|
+| module       | [模块地址/remote/version:]模块名[@子模块][.模块属性] |string|-|
+| onLoadComplete| 当组件加载完成并且mount完毕的时候调用该方法               |function|-|
 
 其他属性将传给远程组件
 
@@ -224,12 +232,11 @@ render(<BaseExample />);
 
 withRemoteLoader(WrappedComponent)
 
-| 属性名            | 说明                                                                                                              | 类型     | 默认值  |
-|----------------|-----------------------------------------------------------------------------------------------------------------|--------|------|
-| remoteLoader   | 加载参数{remote,url,module}remote:远程module的name,url:远程入口文件的地址,module:远程模块名，格式为【模块名@子模块名.属性模块名】                      | object | -    |
-| fallback       | 组件加载时渲染的loading组件                                                                                               | jsx    | null |
-| remoteError    | 组件加载失败时渲染的组件                                                                                                    | jsx    |null|
-| modules        | 注意这里的参数和RemoteLoader有所不同，这里参数为数组可以并发加载多个组件，加载完成后render传入WrappedComponent组件。该方法可以用来批量加载组件或者加载非React Component的模块 | array  |-|
+| 属性名            | 说明                       | 类型     | 默认值  |
+|----------------|--------------------------|--------|------|
+| fallback       | 组件加载时渲染的loading组件        | jsx    | null |
+| remoteError    | 组件加载失败时渲染的组件             | jsx    |null|
+| modules        | 一个模块token数组，模块token的格式为：[模块地址/remote/version:]模块名[@子模块][.模块属性] | array  |-|
 
 #### createWithRemoteLoader
 
@@ -237,6 +244,6 @@ withRemoteLoader的高阶函数，可以将部分参数提前传入，不必在�
 
 #### preset
 
-可以设置预置参数 preset({remote,url,fallback,error});
+可以设置预置参数 preset({remotes,fallback,error});
 
 
