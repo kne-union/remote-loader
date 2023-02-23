@@ -21,9 +21,9 @@
       ]
     },
     {
-      "title": "加载一个子模块",
-      "description": "加载一个子模块",
-      "code": "./module.js",
+      "title": "高阶组件批量加载组件",
+      "description": "高阶组件批量加载组件",
+      "code": "./hoc.js",
       "scope": [
         {
           "name": "remoteLoader",
@@ -36,9 +36,9 @@
       ]
     },
     {
-      "title": "高阶组件批量加载组件",
-      "description": "高阶组件批量加载组件",
-      "code": "./hoc.js",
+      "title": "加载一个子模块",
+      "description": "加载一个子模块",
+      "code": "./module.js",
       "scope": [
         {
           "name": "remoteLoader",
