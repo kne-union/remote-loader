@@ -9,20 +9,23 @@ const loadModule = (token) => {
     const tokenObject = parseToken(token);
 
     const {url, remote} = ((tokenObject, remotes) => {
+        if (tokenObject.url && tokenObject.remote && tokenObject.version) {
+            return {url: tokenObject.url, remote: tokenObject.remote + '_' + tokenObject.version.replace(/\./g, '_')}
+        }
         if (tokenObject.url && tokenObject.remote) {
             return {url: tokenObject.url, remote: tokenObject.remote}
         }
         if (tokenObject.remote && remotes[tokenObject.remote] && tokenObject.version) {
             return {
                 url: ensureSlash(remotes[tokenObject.remote].url) + '/' + remotes[tokenObject.remote].remote + '/' + tokenObject.version,
-                remote: remotes[tokenObject.remote].remote
+                remote: remotes[tokenObject.remote].remote + '_' + tokenObject.version.replace(/\./g, '_')
             };
         }
 
         if (tokenObject.remote && remotes[tokenObject.remote] && remotes[tokenObject.remote].defaultVersion) {
             return {
                 url: ensureSlash(remotes[tokenObject.remote].url) + '/' + remotes[tokenObject.remote].remote + '/' + remotes[tokenObject.remote].defaultVersion,
-                remote: remotes[tokenObject.remote].remote
+                remote: remotes[tokenObject.remote].remote + '_' + remotes[tokenObject.remote].defaultVersion.replace(/\./g, '_')
             };
         }
 
@@ -36,7 +39,7 @@ const loadModule = (token) => {
         if (remotes['default'].defaultVersion) {
             return {
                 url: ensureSlash(remotes['default'].url) + '/' + remotes['default'].remote + '/' + remotes['default'].defaultVersion,
-                remote: remotes['default'].remote
+                remote: remotes['default'].remote + '_' + remotes['default'].defaultVersion.replace(/\./g, '_')
             };
         }
 

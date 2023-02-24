@@ -1,7 +1,7 @@
 {
   "name": "@kne/remote-loader",
   "author": "linzp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "加载一个webpack5生成的邦联模块",
   "dependencies": {
     "@kne/ensure-slash": "^0.1.0",
