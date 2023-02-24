@@ -49,7 +49,7 @@ const {range} = _;
 
 const BaseExample = () => {
     return <Remote module="http://ued.dev.fatalent.cn/ui_components:Global">
-        <Remote module="Content"
+        <Remote module="http://ued.dev.fatalent.cn/ui_components:Content"
                 list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
                     label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
                 }, {
@@ -82,131 +82,6 @@ const BaseExample = () => {
                 }, 1000);
             });
         }}/>
-    </Remote>;
-};
-
-render(<BaseExample/>);
-
-```
-
-- 高阶组件批量加载组件
-- 高阶组件批量加载组件
-- remoteLoader(@kne/remote-loader),reactRouter(react-router-dom)
-
-```jsx
-const {createWithRemoteLoader, preset} = remoteLoader;
-const {BrowserRouter} = reactRouter;
-const {useState, useEffect} = React;
-
-preset({
-    remotes: {
-        default: {
-            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
-        }
-    }
-});
-
-const BaseExample = createWithRemoteLoader({
-    modules: ["Account@OuterContainer", "Account@Login"]
-})(({remoteModules, testProps}) => {
-    const [OuterContainer, Login] = remoteModules;
-    useEffect(() => {
-        console.log('mount');
-    }, []);
-    console.log(testProps);
-    return <BrowserRouter>
-        <OuterContainer>
-            <Login/>
-        </OuterContainer>
-    </BrowserRouter>;
-});
-
-const Outer = () => {
-    const [value, setValue] = useState(false);
-    return <div>
-        <button onClick={() => {
-            setValue(!value);
-        }}>按钮
-        </button>
-        <BaseExample testProps={value}/>
-    </div>;
-};
-
-render(<Outer/>);
-
-```
-
-- 加载一个子模块
-- 加载一个子模块
-- remoteLoader(@kne/remote-loader),reactRouter(react-router-dom)
-
-```jsx
-const {default: Remote, preset} = remoteLoader;
-const {BrowserRouter} = reactRouter;
-
-preset({
-    remotes: {
-        default: {
-            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
-        }
-    }
-});
-
-const BaseExample = () => {
-    return <BrowserRouter>
-        <Remote module="Account@OuterContainer">
-            <Remote module="Account@Login"/>
-        </Remote>
-    </BrowserRouter>;
-};
-
-render(<BaseExample/>);
-
-```
-
-- 加载一个属性模块
-- 加载一个属性模块
-- remoteLoader(@kne/remote-loader)
-
-```jsx
-const {default: Remote, preset} = remoteLoader;
-
-preset({
-    remotes: {
-        default: {
-            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
-        }
-    }
-});
-
-const BaseExample = () => {
-    return <Remote module="InfoPage">
-        <Remote module="InfoPage.Part" title="退票信息">
-            <Remote module="TableInfo"
-                    dataSource={[[{label: "客户名称", content: "腾讯"}, {
-                        label: "发票抬头",
-                        content: "腾讯科技公司"
-                    }], [{label: "发票类型", content: "增值税专用发票"}, {
-                        label: "发票开具日期",
-                        content: "2022-08-15"
-                    }], [{label: "退票金额", content: "22000.00元"}], [{
-                        label: "发票号", content: <div>
-                            <div>00384895992774</div>
-                            <div>00384895992774</div>
-                            <div>00384895992774</div>
-                            <div>00384895992774</div>
-                        </div>
-                    }], [{label: "是否需要重开发票", content: "否"}, {
-                        label: "是否涉及金融变动",
-                        content: "否"
-                    }], [{label: "是否造成实质损失", content: "否"}, {
-                        label: "责任归属",
-                        content: "客户原因"
-                    }], [{label: "退票原因", content: "退票原因的描述退票原因的描述退票原因的描"}], [{
-                        label: "附件",
-                        content: "附件名称"
-                    }], [{label: "操作时间", content: "2022-08-01 16:32"}, {label: "操作人", content: "西西歪"}]]}/>
-        </Remote>
     </Remote>;
 };
 

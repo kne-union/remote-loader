@@ -3,7 +3,7 @@ test('加载完整要素token', () => {
     jest.mock('./loadComponent.js', () => {
         return {
             loadComponent: (remote, sharedScope, module, url) => {
-                expect(remote).toBe('ui_component');
+                expect(remote).toBe('ui_component_1_0');
                 expect(module).toBe('./Layout');
                 expect(url).toBe('http://static.example.com/ui_component/1.0/remoteEntry.js');
                 return () => {
@@ -178,7 +178,7 @@ test('获取preset中默认设置补充url信息', () => {
     jest.mock('./loadComponent.js', () => {
         return {
             loadComponent: (remote, sharedScope, module, url) => {
-                expect(remote).toBe('ui_component');
+                expect(remote).toBe('ui_component_1_2');
                 expect(module).toBe('./Layout');
                 expect(url).toBe('http://static.example.com/ui_component/1.2/remoteEntry.js');
                 return () => {
@@ -216,7 +216,7 @@ test('获取preset中默认设置带有defaultVersion', () => {
     jest.mock('./loadComponent.js', () => {
         return {
             loadComponent: (remote, sharedScope, module, url) => {
-                expect(remote).toBe('ui_component');
+                expect(remote).toBe('ui_component_1_0');
                 expect(module).toBe('./Layout');
                 expect(url).toBe('http://static.example.com/ui_component/1.0/remoteEntry.js');
                 return () => {
@@ -294,7 +294,7 @@ test('获取preset中其他模块设置带有defaultVersion', () => {
     jest.mock('./loadComponent.js', () => {
         return {
             loadComponent: (remote, sharedScope, module, url) => {
-                expect(remote).toBe('component_core');
+                expect(remote).toBe('component_core_1_1');
                 expect(module).toBe('./Layout');
                 expect(url).toBe('http://static.example.com/component_core/1.1/remoteEntry.js');
                 return () => {

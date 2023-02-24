@@ -19,7 +19,9 @@
           "packageName": "lodash"
         }
       ]
-    },
+    }
+  ],
+  "__backup": [
     {
       "title": "高阶组件批量加载组件",
       "description": "高阶组件批量加载组件",

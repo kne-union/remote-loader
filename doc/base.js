@@ -3,7 +3,7 @@ const {range} = _;
 
 const BaseExample = () => {
     return <Remote module="http://ued.dev.fatalent.cn/ui_components:Global">
-        <Remote module="Content"
+        <Remote module="http://ued.dev.fatalent.cn/ui_components:Content"
                 list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
                     label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
                 }, {
