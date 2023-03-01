@@ -3,6 +3,10 @@ import parseToken from './parseToken';
 import ensureSlash from '@kne/ensure-slash'
 import {loadComponent} from "./loadComponent";
 
+const formatRemote = (remote) => {
+    return remote.replace(/[-/.@]/g, '_');
+};
+
 const loadModule = (token) => {
     const remotes = global.remotes;
     const remoteEntryFileName = global.remoteEntryFileName;
@@ -10,7 +14,7 @@ const loadModule = (token) => {
 
     const {url, remote} = ((tokenObject, remotes) => {
         if (tokenObject.url && tokenObject.remote && tokenObject.version) {
-            return {url: tokenObject.url, remote: tokenObject.remote + '_' + tokenObject.version.replace(/\./g, '_')}
+            return {url: tokenObject.url, remote: tokenObject.remote + '_' + tokenObject.version}
         }
         if (tokenObject.url && tokenObject.remote) {
             return {url: tokenObject.url, remote: tokenObject.remote}
@@ -18,14 +22,14 @@ const loadModule = (token) => {
         if (tokenObject.remote && remotes[tokenObject.remote] && tokenObject.version) {
             return {
                 url: ensureSlash(remotes[tokenObject.remote].url) + '/' + remotes[tokenObject.remote].remote + '/' + tokenObject.version,
-                remote: remotes[tokenObject.remote].remote + '_' + tokenObject.version.replace(/\./g, '_')
+                remote: remotes[tokenObject.remote].remote + '_' + tokenObject.version
             };
         }
 
         if (tokenObject.remote && remotes[tokenObject.remote] && remotes[tokenObject.remote].defaultVersion) {
             return {
                 url: ensureSlash(remotes[tokenObject.remote].url) + '/' + remotes[tokenObject.remote].remote + '/' + remotes[tokenObject.remote].defaultVersion,
-                remote: remotes[tokenObject.remote].remote + '_' + remotes[tokenObject.remote].defaultVersion.replace(/\./g, '_')
+                remote: remotes[tokenObject.remote].remote + '_' + remotes[tokenObject.remote].defaultVersion
             };
         }
 
@@ -39,7 +43,7 @@ const loadModule = (token) => {
         if (remotes['default'].defaultVersion) {
             return {
                 url: ensureSlash(remotes['default'].url) + '/' + remotes['default'].remote + '/' + remotes['default'].defaultVersion,
-                remote: remotes['default'].remote + '_' + remotes['default'].defaultVersion.replace(/\./g, '_')
+                remote: remotes['default'].remote + '_' + remotes['default'].defaultVersion
             };
         }
 
@@ -48,7 +52,7 @@ const loadModule = (token) => {
             remote: remotes['default'].remote
         };
     })(tokenObject, remotes);
-    return loadComponent(remote, "default", './' + tokenObject.module.moduleName, ensureSlash(url) + '/' + remoteEntryFileName)().then((module) => {
+    return loadComponent(formatRemote(remote), "default", './' + tokenObject.module.moduleName, ensureSlash(url) + '/' + remoteEntryFileName)().then((module) => {
         const Component = ((tokenModule, module) => {
             if (tokenModule.subModuleName && tokenModule.subModulePropName) {
                 return module[tokenModule.subModuleName][tokenModule.subModulePropName];

@@ -44,19 +44,33 @@ npm i --save @kne/remote-loader
 - remoteLoader(@kne/remote-loader),reactRouter(react-router-dom),_(lodash)
 
 ```jsx
-const {default: Remote, preset} = remoteLoader;
+const {default: Remote, loadModule, preset} = remoteLoader;
 const {range} = _;
 
+preset({
+    remotes: {
+        default: {
+            url: 'http://ued.dev.fatalent.cn', remote: 'ui_components'
+        }, exceed_components: {
+            url: 'http://ued.dev.fatalent.cn/ui_components', remote: 'exceed_components', defaultVersion: '1.0.0'
+        }
+    }
+});
+
+loadModule('http://localhost:3001/ui_components/components-core/0.1.0:components').then((module)=>{
+    console.log(module);
+});
+
 const BaseExample = () => {
-    return <Remote module="http://ued.dev.fatalent.cn/ui_components:Global">
-        <Remote module="http://ued.dev.fatalent.cn/ui_components:Content"
+    return <Remote module="Global">
+        <Remote module="exceed_components:Content"
                 list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
                     label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
                 }, {
                     label: '标题标题标题',
                     content: '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容'
                 }]}/>
-        <Remote module="http://ued.dev.fatalent.cn/ui_components:TablePage" columns={[{
+        <Remote module="exceed_components/1.0.0:TablePage" columns={[{
             title: '职位名称', key: 'positionName', fixed: 'left', dataIndex: 'positionName'
         }, {
             title: '客户名称', key: 'clientName', dataIndex: 'clientName'
