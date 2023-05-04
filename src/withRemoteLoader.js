@@ -14,7 +14,8 @@ const withRemoteLoader = (WrappedComponent) => {
                 setRemotes(modules.map((module) => {
                     return module.default;
                 }));
-            }, () => {
+            }, (e) => {
+                console.error(e);
                 setError(true);
             }).then(() => {
                 setLoading(false);
