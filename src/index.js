@@ -5,3 +5,5 @@ export {default} from './RemoteLoader';
 export {preset} from './preset';
 export {getOrLoadRemote} from './getOrLoadRemote';
 export {loadComponent} from './loadComponent';
+export {default as getPublicPath} from './getPublicPath';
+export {default as parseToken} from './parseToken';
