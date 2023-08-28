@@ -24,15 +24,15 @@ const useLoader = ({modules, onLoadComplete}) => {
             if (cache.has(token)) {
                 return cache.get(token);
             }
-            const module = await loadModule(token);
-            cache.set(token, module);
-            return module;
+            const {default: defaultModal} = await loadModule(token);
+            cache.set(token, defaultModal);
+            return defaultModal;
         })).then((modules) => {
             loadComplete && loadComplete(modules);
-            setLoading(false);
             if (!isEqual(remotesRef.current, modules)) {
                 setRemotes(modules);
             }
+            setLoading(false);
             return modules;
         }, (e) => {
             console.error(e);
