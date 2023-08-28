@@ -6,7 +6,7 @@ import isEqual from "lodash/isEqual";
 const cache = new Map();
 
 const useLoader = ({modules, onLoadComplete}) => {
-    const [loading, setLoading] = useState(modules.every((token) => cache.has(token)));
+    const [loading, setLoading] = useState(!modules.every((token) => cache.has(token)));
     const [error, setError] = useState(false);
     const loadComplete = useRefCallback(onLoadComplete);
     const [remotes, setRemotes] = useState(() => {
