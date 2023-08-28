@@ -1,33 +1,18 @@
-import React, {forwardRef, useEffect, useState} from "react";
+import React, {forwardRef} from "react";
 import useLoader from './useLoader';
 import {global} from "./preset";
-import {merge} from "lodash";
+import merge from "lodash/merge";
 
 const withRemoteLoader = (WrappedComponent) => {
     return forwardRef(({modules, remoteError, onLoadComplete, fallback, ...props}, ref) => {
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(false);
-        const [remotes, setRemotes] = useState([]);
-        const loaderPromise = useLoader({modules, onLoadComplete});
-        useEffect(() => {
-            loaderPromise.then((modules) => {
-                setRemotes(modules.map((module) => {
-                    return module.default;
-                }));
-            }, (e) => {
-                console.error(e);
-                setError(true);
-            }).then(() => {
-                setLoading(false);
-            });
-        }, [loaderPromise]);
+        const {loading, error, remoteModules} = useLoader({modules, onLoadComplete});
         if (loading) {
             return fallback || global.fallback;
         }
         if (error) {
             return remoteError || global.error;
         }
-        return <WrappedComponent {...props} ref={ref} remoteModules={remotes}/>;
+        return <WrappedComponent {...props} ref={ref} remoteModules={remoteModules}/>;
     });
 };
 
