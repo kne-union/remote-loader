@@ -2,7 +2,7 @@ import parseToken from './parseToken';
 
 test('解析完整要素token', () => {
     expect(parseToken('http://static.example.com/ui_component/1.0:Layout@Page.Header')).toEqual({
-        url: 'http://static.example.com/ui_component/1.0', remote: 'ui_component', version: '1.0', module: {
+        url: 'http://static.example.com', remote: 'ui_component', version: '1.0', module: {
             moduleName: 'Layout', subModuleName: 'Page', subModulePropName: 'Header'
         }
     });
@@ -18,7 +18,7 @@ test('解析无address的token', () => {
 
 test('解析无version的token', () => {
     expect(parseToken('http://static.example.com/ui_component:Layout@Page.Header')).toEqual({
-        url: 'http://static.example.com/ui_component', version: null, remote: 'ui_component', module: {
+        url: 'http://static.example.com', version: null, remote: 'ui_component', module: {
             moduleName: 'Layout', subModuleName: 'Page', subModulePropName: 'Header'
         }
     });
@@ -34,7 +34,7 @@ test('解析无address无version的token', () => {
 
 test('解析最简单token', () => {
     expect(parseToken('http://static.example.com/ui_component/1.0:Layout')).toEqual({
-        url: 'http://static.example.com/ui_component/1.0', remote: 'ui_component', version: '1.0', module: {
+        url: 'http://static.example.com', remote: 'ui_component', version: '1.0', module: {
             moduleName: 'Layout'
         }
     });
@@ -42,7 +42,7 @@ test('解析最简单token', () => {
 
 test('解析只带有子模块token', () => {
     expect(parseToken('http://static.example.com/ui_component/1.0:Layout@Page')).toEqual({
-        url: 'http://static.example.com/ui_component/1.0', remote: 'ui_component', version: '1.0', module: {
+        url: 'http://static.example.com', remote: 'ui_component', version: '1.0', module: {
             moduleName: 'Layout', subModuleName: 'Page'
         }
     });

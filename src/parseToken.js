@@ -16,22 +16,20 @@ const parseToken = (token) => {
             return {url: null, remote: null, version: null};
         }
 
-        const addressList = address.replace(/^https?:\/\//, '').split('/');
+        const tag = window.document.createElement('a');
+        tag.href = address;
+        const addressList = tag.pathname.split('/').filter((name)=>!!name), origin = tag.origin;
 
         if (addressList.length === 1) {
-            return {url: null, remote: addressList[0], version: null}
-        }
-
-        if (addressList.length === 2 && /^https?:\/\//.test(address)) {
-            return {url: address, remote: addressList[1], version: null}
+            return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: null}
         }
 
         if (addressList.length === 2) {
-            return {url: null, remote: addressList[0], version: addressList[1]}
+            return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: addressList[1]}
         }
 
         return {
-            url: address, remote: addressList[addressList.length - 2], version: addressList[addressList.length - 1]
+            url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[addressList.length - 2], version: addressList[addressList.length - 1]
         };
     })(token);
 
