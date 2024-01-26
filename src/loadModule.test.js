@@ -20,7 +20,7 @@ test('加载完整要素token', () => {
     jest.mock('./parseToken.js', () => {
         return () => {
             return {
-                url: 'http://static.example.com/ui_component/1.0', version: '1.0', remote: 'ui_component', module: {
+                url: 'http://static.example.com', version: '1.0', remote: 'ui_component', module: {
                     moduleName: 'Layout', subModuleName: 'Page', subModulePropName: 'Header'
                 }
             };
@@ -181,6 +181,45 @@ test('获取preset中默认设置补充url信息', () => {
                 expect(remote).toBe('ui_component_1_2');
                 expect(module).toBe('./Layout');
                 expect(url).toBe('http://static.example.com/ui_component/1.2/remoteEntry.js');
+                return () => {
+                    return Promise.resolve({});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return () => {
+            return {
+                remote: 'ui_component', version: '1.2', module: {
+                    moduleName: 'Layout'
+                }
+            };
+        };
+    });
+
+    const loadModule = require("../src/loadModule");
+    loadModule.default();
+});
+
+test('获取preset中tpl设置', () => {
+    jest.resetModules();
+    const preset = require('./preset').default;
+
+    preset({
+        remotes: {
+            'ui_component': {
+                url: 'http://static.example.com',
+                remote: 'ui_component',
+                defaultVersion: '1.0',
+                tpl: '{{url}}/{{remote}}/{{version}}/dist'
+            }
+        }
+    });
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                expect(url).toBe('http://static.example.com/ui_component/1.2/dist/remoteEntry.js');
                 return () => {
                     return Promise.resolve({});
                 }
