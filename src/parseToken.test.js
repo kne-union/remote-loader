@@ -16,6 +16,14 @@ test('解析无address的token', () => {
     });
 });
 
+test('解析子模块', () => {
+    expect(parseToken('components-function/1.0:Account@AccountOuter.Header')).toEqual({
+        url: null, version: '1.0', remote: 'components-function', module: {
+            moduleName: 'Account', subModuleName: 'AccountOuter', subModulePropName: 'Header'
+        }
+    });
+});
+
 test('解析无version的token', () => {
     expect(parseToken('http://static.example.com/ui_component:Layout@Page.Header')).toEqual({
         url: 'http://static.example.com', version: null, remote: 'ui_component', module: {
