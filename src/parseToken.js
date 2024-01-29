@@ -24,8 +24,8 @@ const parseToken = (token) => {
             return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: null}
         }
 
-        if (addressList.length === 2) {
-            return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: addressList[1]}
+        if (addressList.length === 2 && /^https?:\/\//.test(address)) {
+            return {url: origin, remote: addressList[0], version: addressList[1]}
         }
 
         return {
