@@ -16,9 +16,15 @@ const parseToken = (token) => {
             return {url: null, remote: null, version: null};
         }
 
-        const tag = window.document.createElement('a');
-        tag.href = address;
-        const addressList = tag.pathname.split('/').filter((name)=>!!name), origin = tag.origin;
+        const {addressList, origin} = (() => {
+            if (/^https?:\/\//.test(address)) {
+                const tag = window.document.createElement('a');
+                tag.href = address;
+                return {addressList: tag.pathname.split('/').filter((name) => !!name), origin: tag.origin};
+            }
+
+            return {addressList: address.split('/').filter((name) => !!name), origin: null};
+        })();
 
         if (addressList.length === 1) {
             return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: null}
@@ -29,7 +35,9 @@ const parseToken = (token) => {
         }
 
         return {
-            url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[addressList.length - 2], version: addressList[addressList.length - 1]
+            url: /^https?:\/\//.test(address) ? origin : null,
+            remote: addressList[addressList.length - 2],
+            version: addressList[addressList.length - 1]
         };
     })(token);
 
