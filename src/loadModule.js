@@ -16,12 +16,15 @@ const loadModule = (token) => {
 
     const {url, remote} = ((tokenObject, remotes) => {
         const getStaticPathWithTpl = (options) => getStaticPath(Object.assign({}, options, {
-            tpl: get(remotes, `[${tokenObject.remote || 'default'}].tpl`)
+            tpl: get(remotes, `[${options.remote || 'default'}].tpl`)
         }));
         if (tokenObject.url && tokenObject.remote && tokenObject.version) {
             return {
-                url: getStaticPathWithTpl({url: tokenObject.url, remote: tokenObject.remote,version:tokenObject.version}),
-                remote: tokenObject.remote + '_' + tokenObject.version
+                url: getStaticPathWithTpl({
+                    url: tokenObject.url,
+                    remote: tokenObject.remote,
+                    version: tokenObject.version
+                }), remote: tokenObject.remote + '_' + tokenObject.version
             }
         }
         if (tokenObject.url && tokenObject.remote) {
