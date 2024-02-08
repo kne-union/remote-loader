@@ -1,0 +1,52 @@
+{
+  "name": "@kne-components/remote-loader",
+  "version": "0.1.1",
+  "dependencies": {
+    "@kne/remote-loader": "file:..",
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "start": "cross-env PORT=3020 MODULES_DEV_PUBLIC_URL=/ craco start",
+    "build": "cross-env COMPONENTS_NAME=remote-loader MODULES_DEV_PUBLIC_URL=/remote-loader  craco build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@kne/craco-module-federation": "^1.1.2",
+    "@kne/modules-dev": "^2.0.6",
+    "@kne/react-fetch": "^1.4.2",
+    "antd": "^5.13.3",
+    "axios": "^1.6.7",
+    "classnames": "^2.5.1",
+    "cross-env": "^7.0.3",
+    "http-proxy-middleware": "^2.0.6",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.3.0",
+    "lodash": "^4.17.21",
+    "node-sass": "^7.0.3",
+    "prettier": "^2.8.8",
+    "react-router-dom": "^6.22.0",
+    "react-scripts": "^5.0.1"
+  }
+}

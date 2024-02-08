@@ -19,6 +19,17 @@
           "packageName": "lodash"
         }
       ]
+    },
+    {
+      "title": "加载一个属性模块",
+      "description": "加载一个属性模块",
+      "code": "./sub-module.js",
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
     }
   ],
   "__backup": [
