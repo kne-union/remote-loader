@@ -18,7 +18,7 @@ export const getOrLoadRemote = (remote, shareScope, remoteFallbackUrl = undefine
         const onload = async (script) => {
             script.setAttribute('data-status', 'success');
             // check if it was initialized
-            if (!window[remote].__initialized) {
+            if (window[remote] && !window[remote].__initialized) {
                 if (typeof __webpack_share_scopes__ !== 'undefined' && shareScope) {
                     // otherwise, init share scope as usual
                     __webpack_share_scopes__[shareScope] && await window[remote].init(__webpack_share_scopes__[shareScope]);

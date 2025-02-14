@@ -25,6 +25,10 @@ const useLoader = ({modules, onLoadComplete}) => {
                 return cache.get(token);
             }
             const {default: defaultModal} = await loadModule(token);
+            typeof defaultModal.moduleMounted === 'function' && await defaultModal.moduleMounted({
+                token,
+                module: defaultModal
+            });
             cache.set(token, defaultModal);
             return defaultModal;
         })).then((modules) => {
