@@ -26,20 +26,19 @@ const useLoader = ({modules, onLoadComplete}) => {
             }
             const {default: defaultModal} = await loadModule(token);
             typeof defaultModal.moduleMounted === 'function' && await defaultModal.moduleMounted({
-                token,
-                module: defaultModal
+                token, module: defaultModal
             });
             cache.set(token, defaultModal);
             return defaultModal;
-        })).then((modules) => {
-            loadComplete && loadComplete(modules);
+        })).then(async (modules) => {
+            loadComplete && await loadComplete(modules);
             if (!isEqual(remotesRef.current, modules)) {
                 setRemotes(modules);
             }
             setLoading(false);
             return modules;
         }, (e) => {
-            console.error(e);
+            console.error(e.stack);
             setError(true);
         });
     }, [modules]);
