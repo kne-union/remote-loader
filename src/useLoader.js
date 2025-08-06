@@ -26,8 +26,7 @@ const useLoader = ({modules, onLoadComplete}) => {
             }
             const {default: defaultModal} = await loadModule(token);
             typeof defaultModal.moduleMounted === 'function' && await defaultModal.moduleMounted({
-                token,
-                module: defaultModal
+                token, module: defaultModal
             });
             cache.set(token, defaultModal);
             return defaultModal;
@@ -39,7 +38,7 @@ const useLoader = ({modules, onLoadComplete}) => {
             setLoading(false);
             return modules;
         }, (e) => {
-            console.error(e);
+            console.error(e.stack);
             setError(true);
         });
     }, [modules]);

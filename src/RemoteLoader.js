@@ -10,7 +10,7 @@ const RemoteLoader = forwardRef(({module, ...props}, ref) => {
     const modules = useMemo(() => {
         return [module];
     }, [module]);
-    return <RemoteLoaders {...props} modules={modules} ref={ref}/>
+    return <RemoteLoaders {...props} modules={modules} key=={module} ref={ref}/>
 });
 
 export default RemoteLoader;
