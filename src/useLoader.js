@@ -30,8 +30,8 @@ const useLoader = ({modules, onLoadComplete}) => {
             });
             cache.set(token, defaultModal);
             return defaultModal;
-        })).then((modules) => {
-            loadComplete && loadComplete(modules);
+        })).then(async (modules) => {
+            loadComplete && await loadComplete(modules);
             if (!isEqual(remotesRef.current, modules)) {
                 setRemotes(modules);
             }
