@@ -21,9 +21,7 @@ const loadModule = (token) => {
         if (tokenObject.url && tokenObject.remote && tokenObject.version) {
             return {
                 url: getStaticPathWithTpl({
-                    url: tokenObject.url,
-                    remote: tokenObject.remote,
-                    version: tokenObject.version
+                    url: tokenObject.url, remote: tokenObject.remote, version: tokenObject.version
                 }), remote: tokenObject.remote + '_' + tokenObject.version
             }
         }
@@ -93,6 +91,17 @@ const loadModule = (token) => {
             default: Component
         };
     });
+};
+
+export const safeLoadModule = async (token) => {
+    try {
+        return await loadModule(token).then(({default: defaultModule}) => defaultModule);
+    } catch (e) {
+        console.error(e);
+        return () => {
+            return {};
+        };
+    }
 };
 
 export default loadModule;

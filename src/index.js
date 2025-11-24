@@ -1,4 +1,4 @@
-export {default as loadModule} from './loadModule';
+export {default as loadModule, safeLoadModule} from './loadModule';
 export {default as useLoader} from './useLoader';
 export {createWithRemoteLoader, default as withRemoteLoader} from './withRemoteLoader';
 export {default} from './RemoteLoader';
