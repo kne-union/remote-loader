@@ -1,10 +1,10 @@
-import React, {forwardRef} from "react";
+import React, {forwardRef, memo} from "react";
 import useLoader from './useLoader';
 import {global} from "./preset";
 import merge from "lodash/merge";
 
 const withRemoteLoader = (WrappedComponent) => {
-    return forwardRef(({modules, remoteError, onLoadComplete, fallback, ...props}, ref) => {
+    const RemoteComponent = forwardRef(({modules, remoteError, onLoadComplete, fallback, ...props}, ref) => {
         const {loading, error, remoteModules} = useLoader({modules, onLoadComplete});
         if (loading) {
             return fallback || global.fallback;
@@ -14,6 +14,7 @@ const withRemoteLoader = (WrappedComponent) => {
         }
         return <WrappedComponent {...props} ref={ref} remoteModules={remoteModules}/>;
     });
+    return memo(RemoteComponent);
 };
 
 export const createWithRemoteLoader = (params) => (WrappedComponent) => {
