@@ -1,6 +1,6 @@
 import useRefCallback from "@kne/use-ref-callback";
 import loadModule from './loadModule';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useCallback} from "react";
 import isEqual from "lodash/isEqual";
 
 const cache = new Map();
@@ -17,7 +17,13 @@ const useLoader = ({modules, onLoadComplete}) => {
     });
 
     const remotesRef = useRef(remotes);
-    remotesRef.current = remotes;
+
+    const updateRemotes = useCallback((newRemotes) => {
+        if (!isEqual(remotesRef.current, newRemotes)) {
+            remotesRef.current = newRemotes;
+            setRemotes(newRemotes);
+        }
+    }, []);
 
     useEffect(() => {
         Promise.all(modules.map(async (token) => {
@@ -30,18 +36,16 @@ const useLoader = ({modules, onLoadComplete}) => {
             });
             cache.set(token, defaultModal);
             return defaultModal;
-        })).then(async (modules) => {
-            loadComplete && await loadComplete(modules);
-            if (!isEqual(remotesRef.current, modules)) {
-                setRemotes(modules);
-            }
+        })).then(async (loadedModules) => {
+            loadComplete && await loadComplete(loadedModules);
+            updateRemotes(loadedModules);
             setLoading(false);
-            return modules;
+            return loadedModules;
         }, (e) => {
             console.error(e.stack);
             setError(true);
         });
-    }, [modules]);
+    }, [modules, loadComplete, updateRemotes]);
     return {
         loading, error, remoteModules: remotes
     };
