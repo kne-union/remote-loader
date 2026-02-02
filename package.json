@@ -1,7 +1,7 @@
 {
   "name": "@kne/remote-loader",
   "author": "linzp",
-  "version": "1.4.0-alpha.0",
+  "version": "1.4.0-alpha.1",
   "description": "加载一个webpack5生成的邦联模块",
   "dependencies": {
     "@kne/ensure-slash": "^0.1.0",
@@ -73,7 +73,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "cross-env": "^7.0.3",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^6.3.0",
     "husky": "^7.0.4",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",

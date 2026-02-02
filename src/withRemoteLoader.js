@@ -4,7 +4,7 @@ import {global} from "./preset";
 import merge from "lodash/merge";
 
 const withRemoteLoader = (WrappedComponent) => {
-    const RemoteComponent = forwardRef(({modules, remoteError, onLoadComplete, fallback, ...props}, ref) => {
+    const RemoteComponent = forwardRef(({modules = [], remoteError, onLoadComplete, fallback, ...props}, ref) => {
         const {loading, error, remoteModules} = useLoader({modules, onLoadComplete});
         if (loading) {
             return fallback || global.fallback;
@@ -14,12 +14,18 @@ const withRemoteLoader = (WrappedComponent) => {
         }
         return <WrappedComponent {...props} ref={ref} remoteModules={remoteModules}/>;
     });
+    RemoteComponent.displayName = `withRemoteLoader(${WrappedComponent.displayName || WrappedComponent.name})`;
     return memo(RemoteComponent);
 };
 
 export const createWithRemoteLoader = (params) => (WrappedComponent) => {
     const RemoteComponent = withRemoteLoader(WrappedComponent);
-    return forwardRef((props, ref) => <RemoteComponent {...merge({}, params, props)} ref={ref}/>);
+    const CreateWithRemoteLoaderComponent = memo(forwardRef((props, ref) => {
+        const mergedProps = merge({}, params, props);
+        return <RemoteComponent {...mergedProps} ref={ref}/>;
+    }));
+    CreateWithRemoteLoaderComponent.displayName = `createWithRemoteLoader(${WrappedComponent.displayName || WrappedComponent.name})`;
+    return CreateWithRemoteLoaderComponent;
 };
 
 export default withRemoteLoader;

@@ -1,25 +1,33 @@
 import useRefCallback from "@kne/use-ref-callback";
 import loadModule from './loadModule';
+import LRUCache from './LRUCache';
 import {useEffect, useRef, useState, useCallback} from "react";
-import isEqual from "lodash/isEqual";
 
-const cache = new Map();
+const cache = new LRUCache(500);
 
-const useLoader = ({modules, onLoadComplete}) => {
-    const [loading, setLoading] = useState(!modules.every((token) => cache.has(token)));
-    const [error, setError] = useState(false);
+// 导出 cache 实例以便外部可以访问和清理
+export {cache};
+
+const useLoader = ({modules = [], onLoadComplete}) => {
     const loadComplete = useRefCallback(onLoadComplete);
+    const loadCompleteRef = useRef(loadComplete);
+
+    loadCompleteRef.current = loadComplete;
+
+    const [loading, setLoading] = useState(() => {
+        const allCached = modules.every((token) => cache.has(token));
+        return !allCached;
+    });
+    const [error, setError] = useState(false);
     const [remotes, setRemotes] = useState(() => {
-        if (loading) {
-            return [];
-        }
-        return modules.map((token) => cache.get(token));
+        return modules.every((token) => cache.has(token)) ? modules.map((token) => cache.get(token)) : [];
     });
 
     const remotesRef = useRef(remotes);
 
     const updateRemotes = useCallback((newRemotes) => {
-        if (!isEqual(remotesRef.current, newRemotes)) {
+        const isEqual = remotesRef.current.length === newRemotes.length && remotesRef.current.every((item, index) => item === newRemotes[index]);
+        if (!isEqual) {
             remotesRef.current = newRemotes;
             setRemotes(newRemotes);
         }
@@ -37,15 +45,16 @@ const useLoader = ({modules, onLoadComplete}) => {
             cache.set(token, defaultModal);
             return defaultModal;
         })).then(async (loadedModules) => {
-            loadComplete && await loadComplete(loadedModules);
+            loadCompleteRef.current && await loadCompleteRef.current(loadedModules);
             updateRemotes(loadedModules);
             setLoading(false);
             return loadedModules;
         }, (e) => {
-            console.error(e.stack);
+            console.error(e);
             setError(true);
+            setLoading(false);
         });
-    }, [modules, loadComplete, updateRemotes]);
+    }, [modules, updateRemotes]);
     return {
         loading, error, remoteModules: remotes
     };
