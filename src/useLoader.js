@@ -39,6 +39,9 @@ const useLoader = ({modules = [], onLoadComplete}) => {
                 return cache.get(token);
             }
             const {default: defaultModal} = await loadModule(token);
+            if (!defaultModal) {
+                throw new Error(`[${token}] load failed!`);
+            }
             typeof defaultModal.moduleMounted === 'function' && await defaultModal.moduleMounted({
                 token, module: defaultModal
             });
