@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.js": "/remote-loader/static/js/main.2bd06683.js",
-    "remote_loader_1_4_0_alpha_1.js": "/remote-loader/remoteEntry.js",
+    "main.js": "/remote-loader/static/js/main.16074d14.js",
+    "remote_loader_1_4_0.js": "/remote-loader/remoteEntry.js",
     "static/css/451.fe55516a.chunk.css": "/remote-loader/static/css/451.fe55516a.chunk.css",
-    "static/js/451.8dce9c40.chunk.js": "/remote-loader/static/js/451.8dce9c40.chunk.js",
+    "static/js/451.1cfc9135.chunk.js": "/remote-loader/static/js/451.1cfc9135.chunk.js",
     "static/js/510.6647b3fc.chunk.js": "/remote-loader/static/js/510.6647b3fc.chunk.js",
     "static/js/379.d91eb03b.chunk.js": "/remote-loader/static/js/379.d91eb03b.chunk.js",
     "static/js/446.a43d8785.chunk.js": "/remote-loader/static/js/446.a43d8785.chunk.js",
     "static/js/233.93ffa639.chunk.js": "/remote-loader/static/js/233.93ffa639.chunk.js",
-    "static/js/151.1d12b56d.chunk.js": "/remote-loader/static/js/151.1d12b56d.chunk.js",
+    "static/js/151.64afef6e.chunk.js": "/remote-loader/static/js/151.64afef6e.chunk.js",
     "static/js/201.a9b34021.chunk.js": "/remote-loader/static/js/201.a9b34021.chunk.js",
     "static/js/84.607fa43d.chunk.js": "/remote-loader/static/js/84.607fa43d.chunk.js",
     "static/js/848.10271685.chunk.js": "/remote-loader/static/js/848.10271685.chunk.js",
@@ -21,15 +21,15 @@
     "static/js/245.96490432.chunk.js": "/remote-loader/static/js/245.96490432.chunk.js",
     "static/js/666.eee3e017.chunk.js": "/remote-loader/static/js/666.eee3e017.chunk.js",
     "index.html": "/remote-loader/index.html",
-    "main.2bd06683.js.map": "/remote-loader/static/js/main.2bd06683.js.map",
+    "main.16074d14.js.map": "/remote-loader/static/js/main.16074d14.js.map",
     "remoteEntry.js.map": "/remote-loader/remoteEntry.js.map",
     "451.fe55516a.chunk.css.map": "/remote-loader/static/css/451.fe55516a.chunk.css.map",
-    "451.8dce9c40.chunk.js.map": "/remote-loader/static/js/451.8dce9c40.chunk.js.map",
+    "451.1cfc9135.chunk.js.map": "/remote-loader/static/js/451.1cfc9135.chunk.js.map",
     "510.6647b3fc.chunk.js.map": "/remote-loader/static/js/510.6647b3fc.chunk.js.map",
     "379.d91eb03b.chunk.js.map": "/remote-loader/static/js/379.d91eb03b.chunk.js.map",
     "446.a43d8785.chunk.js.map": "/remote-loader/static/js/446.a43d8785.chunk.js.map",
     "233.93ffa639.chunk.js.map": "/remote-loader/static/js/233.93ffa639.chunk.js.map",
-    "151.1d12b56d.chunk.js.map": "/remote-loader/static/js/151.1d12b56d.chunk.js.map",
+    "151.64afef6e.chunk.js.map": "/remote-loader/static/js/151.64afef6e.chunk.js.map",
     "201.a9b34021.chunk.js.map": "/remote-loader/static/js/201.a9b34021.chunk.js.map",
     "84.607fa43d.chunk.js.map": "/remote-loader/static/js/84.607fa43d.chunk.js.map",
     "848.10271685.chunk.js.map": "/remote-loader/static/js/848.10271685.chunk.js.map",
@@ -43,6 +43,6 @@
     "666.eee3e017.chunk.js.map": "/remote-loader/static/js/666.eee3e017.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.2bd06683.js"
+    "static/js/main.16074d14.js"
   ]
 }
