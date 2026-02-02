@@ -1,5 +1,5 @@
 export {default as loadModule, safeLoadModule} from './loadModule';
-export {default as useLoader} from './useLoader';
+export {default as useLoader, cache} from './useLoader';
 export {createWithRemoteLoader, default as withRemoteLoader} from './withRemoteLoader';
 export {default} from './RemoteLoader';
 export {preset} from './preset';
