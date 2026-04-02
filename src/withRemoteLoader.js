@@ -4,8 +4,15 @@ import {global} from "./preset";
 import merge from "lodash/merge";
 
 const withRemoteLoader = (WrappedComponent) => {
-    const RemoteComponent = forwardRef(({modules = [], remoteError, onLoadComplete, fallback, ...props}, ref) => {
-        const {loading, error, remoteModules} = useLoader({modules, onLoadComplete});
+    const RemoteComponent = forwardRef(({
+                                            modules = [],
+                                            remoteError,
+                                            onLoadComplete,
+                                            fallback,
+                                            options,
+                                            ...props
+                                        }, ref) => {
+        const {loading, error, remoteModules} = useLoader({modules, onLoadComplete, options});
         if (loading) {
             return fallback || global.fallback;
         }

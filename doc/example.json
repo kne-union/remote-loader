@@ -30,6 +30,17 @@
           "packageName": "@kne/remote-loader"
         }
       ]
+    },
+    {
+      "title": "JSX props 更新与重建排查",
+      "description": "module 固定为字符串，传入 JSX props，观察是否发生异常重建",
+      "code": "./jsx-props-remount.js",
+      "scope": [
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
     }
   ],
   "__backup": [

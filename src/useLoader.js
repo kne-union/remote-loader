@@ -8,7 +8,7 @@ const cache = new LRUCache(500);
 // 导出 cache 实例以便外部可以访问和清理
 export {cache};
 
-const useLoader = ({modules = [], onLoadComplete}) => {
+const useLoader = ({modules = [], onLoadComplete, options = {}}) => {
     const loadComplete = useRefCallback(onLoadComplete);
     const loadCompleteRef = useRef(loadComplete);
 
@@ -38,7 +38,7 @@ const useLoader = ({modules = [], onLoadComplete}) => {
             if (cache.has(token)) {
                 return cache.get(token);
             }
-            const {default: defaultModal} = await loadModule(token);
+            const {default: defaultModal} = await loadModule(token, options);
             if (!defaultModal) {
                 throw new Error(`[${token}] load failed!`);
             }
