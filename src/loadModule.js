@@ -9,69 +9,93 @@ const formatRemote = (remote) => {
     return remote.replace(/[-/.@]/g, '_');
 };
 
-const loadModule = (token, targetOptions) => {
-    const remotes = global.remotes;
-    const remoteEntryFileName = global.remoteEntryFileName;
+const loadModule = (token, targetOptions = {}) => {
+    const remotes = get(targetOptions, 'remotes', global.remotes);
+    const remoteEntryFileName = get(targetOptions, 'remoteEntryFileName', global.remoteEntryFileName);
     const tokenObject = parseToken(token);
 
     const {url, remote} = ((tokenObject, remotes) => {
-        const getStaticPathWithTpl = (options) => getStaticPath(Object.assign({}, options, {
-            tpl: get(remotes, `[${options.remote || 'default'}].tpl`)
-        }, targetOptions));
-        if (tokenObject.url && tokenObject.remote && tokenObject.version) {
+        const resolveOptions = (options) => {
+            const resolvedRemote = get(targetOptions, 'remote', options.remote);
+            const resolvedVersion = get(targetOptions, 'version', options.version);
             return {
-                url: getStaticPathWithTpl({
-                    url: tokenObject.url, remote: tokenObject.remote, version: tokenObject.version
-                }), remote: tokenObject.remote + '_' + tokenObject.version
+                url: get(targetOptions, 'url', options.url),
+                remote: resolvedRemote,
+                version: resolvedVersion
+            };
+        };
+
+        const getRemoteWithVersion = (options) => {
+            const resolved = resolveOptions(options);
+            return resolved.version ? `${resolved.remote}_${resolved.version}` : resolved.remote;
+        };
+
+        const getStaticPathWithTpl = (options) => {
+            const resolved = resolveOptions(options);
+            return getStaticPath(Object.assign({}, resolved, {
+                tpl: get(targetOptions, 'tpl', get(remotes, `[${resolved.remote || 'default'}].tpl`))
+            }));
+        };
+
+        if (tokenObject.url && tokenObject.remote && tokenObject.version) {
+            const options = {url: tokenObject.url, remote: tokenObject.remote, version: tokenObject.version};
+            return {
+                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
             }
         }
         if (tokenObject.url && tokenObject.remote) {
+            const options = {url: tokenObject.url, remote: tokenObject.remote};
             return {
-                url: getStaticPathWithTpl({url: tokenObject.url, remote: tokenObject.remote}),
-                remote: tokenObject.remote
+                url: getStaticPathWithTpl(options),
+                remote: getRemoteWithVersion(options)
             }
         }
         if (tokenObject.remote && remotes[tokenObject.remote] && tokenObject.version) {
+            const options = {
+                url: remotes[tokenObject.remote].url,
+                remote: remotes[tokenObject.remote].remote,
+                version: tokenObject.version
+            };
             return {
-                url: getStaticPathWithTpl({
-                    url: remotes[tokenObject.remote].url,
-                    remote: remotes[tokenObject.remote].remote,
-                    version: tokenObject.version
-                }), remote: remotes[tokenObject.remote].remote + '_' + tokenObject.version
+                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
             };
         }
 
         if (tokenObject.remote && remotes[tokenObject.remote] && remotes[tokenObject.remote].defaultVersion) {
+            const options = {
+                url: remotes[tokenObject.remote].url,
+                remote: remotes[tokenObject.remote].remote,
+                version: remotes[tokenObject.remote].defaultVersion
+            };
             return {
-                url: getStaticPathWithTpl({
-                    url: remotes[tokenObject.remote].url,
-                    remote: remotes[tokenObject.remote].remote,
-                    version: remotes[tokenObject.remote].defaultVersion
-                }), remote: remotes[tokenObject.remote].remote + '_' + remotes[tokenObject.remote].defaultVersion
+                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
             };
         }
 
         if (tokenObject.remote && remotes[tokenObject.remote]) {
+            const options = {
+                url: remotes[tokenObject.remote].url, remote: remotes[tokenObject.remote].remote
+            };
             return {
-                url: getStaticPathWithTpl({
-                    url: remotes[tokenObject.remote].url, remote: remotes[tokenObject.remote].remote
-                }), remote: remotes[tokenObject.remote].remote
+                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
             };
         }
 
         if (remotes['default'].defaultVersion) {
+            const options = {
+                url: remotes['default'].url,
+                remote: remotes['default'].remote,
+                version: remotes['default'].defaultVersion
+            };
             return {
-                url: getStaticPathWithTpl({
-                    url: remotes['default'].url,
-                    remote: remotes['default'].remote,
-                    version: remotes['default'].defaultVersion
-                }), remote: remotes['default'].remote + '_' + remotes['default'].defaultVersion
+                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
             };
         }
 
+        const options = {url: remotes['default'].url, remote: remotes['default'].remote};
         return {
-            url: getStaticPathWithTpl({url: remotes['default'].url, remote: remotes['default'].remote}),
-            remote: remotes['default'].remote
+            url: getStaticPathWithTpl(options),
+            remote: getRemoteWithVersion(options)
         };
     })(tokenObject, remotes);
     return loadComponent(formatRemote(remote), "default", './' + tokenObject.module.moduleName, ensureSlash(url) + '/' + remoteEntryFileName)().then((module) => {
