@@ -1,6 +1,29 @@
 import ensureSlash from '@kne/ensure-slash'
 // token: [模块地址/remote/version:]模块名[@子模块][.模块属性]
 
+const parseByURL = (address) => {
+    try {
+        const parsed = new URL(address);
+        const addressList = parsed.pathname.split('/').filter((name) => !!name);
+
+        if (addressList.length === 1) {
+            return {url: parsed.origin, remote: addressList[0], version: null};
+        }
+
+        if (addressList.length === 2) {
+            return {url: parsed.origin, remote: addressList[0], version: addressList[1]};
+        }
+
+        return {
+            url: parsed.origin,
+            remote: addressList[addressList.length - 2],
+            version: addressList[addressList.length - 1]
+        };
+    } catch (e) {
+        return null;
+    }
+};
+
 const parseToken = (token) => {
     const {url, remote, version} = ((token) => {
 
@@ -16,26 +39,22 @@ const parseToken = (token) => {
             return {url: null, remote: null, version: null};
         }
 
-        const {addressList, origin} = (() => {
-            if (/^https?:\/\//.test(address)) {
-                const tag = window.document.createElement('a');
-                tag.href = address;
-                return {addressList: tag.pathname.split('/').filter((name) => !!name), origin: tag.origin};
+        const isHttpAddress = /^https?:\/\//.test(address);
+        if (isHttpAddress) {
+            const parsed = parseByURL(address);
+            if (parsed) {
+                return parsed;
             }
-
-            return {addressList: address.split('/').filter((name) => !!name), origin: null};
-        })();
-
-        if (addressList.length === 1) {
-            return {url: /^https?:\/\//.test(address) ? origin : null, remote: addressList[0], version: null}
         }
 
-        if (addressList.length === 2 && /^https?:\/\//.test(address)) {
-            return {url: origin, remote: addressList[0], version: addressList[1]}
+        const addressList = address.split('/').filter((name) => !!name);
+
+        if (addressList.length === 1) {
+            return {url: null, remote: addressList[0], version: null}
         }
 
         return {
-            url: /^https?:\/\//.test(address) ? origin : null,
+            url: null,
             remote: addressList[addressList.length - 2],
             version: addressList[addressList.length - 1]
         };

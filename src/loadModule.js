@@ -9,7 +9,7 @@ const formatRemote = (remote) => {
     return remote.replace(/[-/.@]/g, '_');
 };
 
-const loadModule = (token) => {
+const loadModule = (token, targetOptions) => {
     const remotes = global.remotes;
     const remoteEntryFileName = global.remoteEntryFileName;
     const tokenObject = parseToken(token);
@@ -17,7 +17,7 @@ const loadModule = (token) => {
     const {url, remote} = ((tokenObject, remotes) => {
         const getStaticPathWithTpl = (options) => getStaticPath(Object.assign({}, options, {
             tpl: get(remotes, `[${options.remote || 'default'}].tpl`)
-        }));
+        }, targetOptions));
         if (tokenObject.url && tokenObject.remote && tokenObject.version) {
             return {
                 url: getStaticPathWithTpl({
