@@ -356,3 +356,89 @@ test('获取preset中其他模块设置带有defaultVersion', () => {
     const loadModule = require("./loadModule");
     loadModule.default();
 });
+
+test('targetOptions优先于global配置', () => {
+    jest.resetModules();
+    const preset = require('./preset').default;
+    preset({
+        remotes: {
+            default: {
+                url: 'http://global.example.com', remote: 'global_remote', defaultVersion: '1.0', tpl: '{{url}}/{{remote}}/{{version}}/dist'
+            }
+        },
+        remoteEntryFileName: 'globalRemoteEntry.js'
+    });
+
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                expect(remote).toBe('target_remote_9_9');
+                expect(module).toBe('./Layout');
+                expect(url).toBe('http://target.example.com/target_remote/9.9/assets/targetRemoteEntry.js');
+                return () => {
+                    return Promise.resolve({});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return () => {
+            return {
+                module: {
+                    moduleName: 'Layout'
+                }
+            };
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    return loadModule.default('', {
+        remoteEntryFileName: 'targetRemoteEntry.js',
+        url: 'http://target.example.com',
+        remote: 'target_remote',
+        version: '9.9',
+        tpl: '{{url}}/{{remote}}/{{version}}/assets'
+    });
+});
+
+test('targetOptions部分字段时其余回退global配置', () => {
+    jest.resetModules();
+    const preset = require('./preset').default;
+    preset({
+        remotes: {
+            default: {
+                url: 'http://global.example.com', remote: 'global_remote', defaultVersion: '1.0', tpl: '{{url}}/{{remote}}/{{version}}/dist'
+            }
+        },
+        remoteEntryFileName: 'globalRemoteEntry.js'
+    });
+
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                expect(remote).toBe('global_remote_2_0');
+                expect(module).toBe('./Layout');
+                expect(url).toBe('http://global.example.com/global_remote/2.0/globalRemoteEntry.js');
+                return () => {
+                    return Promise.resolve({});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return () => {
+            return {
+                module: {
+                    moduleName: 'Layout'
+                }
+            };
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    return loadModule.default('', {
+        version: '2.0'
+    });
+});
