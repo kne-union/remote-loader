@@ -2,8 +2,8 @@
   "isFull": true,
   "list": [
     {
-      "title": "加载一个模块",
-      "description": "加载一个模块",
+      "title": "RemoteLoader 加载业务组件（Content/Table）",
+      "description": "通过 `RemoteLoader` 分别加载 `components-core:Content` 与 `components-core:Table`，演示复杂表格列配置、异步点击与多类型字段渲染。",
       "code": "./base.js",
       "scope": [
         {
@@ -21,8 +21,8 @@
       ]
     },
     {
-      "title": "加载一个属性模块",
-      "description": "加载一个属性模块",
+      "title": "RemoteLoader 属性子模块链式渲染",
+      "description": "按 `InfoPage -> InfoPage.Part -> Descriptions` 的链路加载属性子模块，并传入含 JSX 的 `dataSource` 结构。",
       "code": "./sub-module.js",
       "scope": [
         {
@@ -32,8 +32,8 @@
       ]
     },
     {
-      "title": "JSX props 更新与重建排查",
-      "description": "module 固定为字符串，传入 JSX props，观察是否发生异常重建",
+      "title": "JSX Props 稳定性与异常重建排查",
+      "description": "`module` 固定为字符串，通过动态/稳定两组 JSX props 对照，观察远程组件在重渲染过程中的挂载与卸载行为。",
       "code": "./jsx-props-remount.js",
       "scope": [
         {
@@ -45,8 +45,8 @@
   ],
   "__backup": [
     {
-      "title": "高阶组件批量加载组件",
-      "description": "高阶组件批量加载组件",
+      "title": "createWithRemoteLoader 批量加载并透传业务参数",
+      "description": "使用 `createWithRemoteLoader` 一次加载 `OuterContainer` 与 `Login`，并通过外层状态切换触发参数更新。",
       "code": "./hoc.js",
       "scope": [
         {
@@ -60,8 +60,8 @@
       ]
     },
     {
-      "title": "加载一个子模块",
-      "description": "加载一个子模块",
+      "title": "RemoteLoader 加载子模块组合页面",
+      "description": "通过 `RemoteLoader` 组合加载 `Account@OuterContainer` 与 `Account@Login`，构建基础登录容器场景。",
       "code": "./module.js",
       "scope": [
         {
@@ -75,8 +75,8 @@
       ]
     },
     {
-      "title": "加载一个属性模块",
-      "description": "加载一个属性模块",
+      "title": "RemoteLoader 属性子模块链式渲染",
+      "description": "按 `InfoPage -> InfoPage.Part -> Descriptions` 的链路加载属性子模块，并传入含 JSX 的 `dataSource` 结构。",
       "code": "./sub-module.js",
       "scope": [
         {

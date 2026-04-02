@@ -1,16 +1,10 @@
 import React, {forwardRef, memo} from "react";
 import useLoader from './useLoader';
 import {global} from "./preset";
-import merge from "lodash/merge";
 
 const withRemoteLoader = (WrappedComponent) => {
     const RemoteComponent = forwardRef(({
-                                            modules = [],
-                                            remoteError,
-                                            onLoadComplete,
-                                            fallback,
-                                            options,
-                                            ...props
+                                            modules = [], remoteError, onLoadComplete, fallback, options, ...props
                                         }, ref) => {
         const {loading, error, remoteModules} = useLoader({modules, onLoadComplete, options});
         if (loading) {
@@ -28,7 +22,7 @@ const withRemoteLoader = (WrappedComponent) => {
 export const createWithRemoteLoader = (params) => (WrappedComponent) => {
     const RemoteComponent = withRemoteLoader(WrappedComponent);
     const CreateWithRemoteLoaderComponent = memo(forwardRef((props, ref) => {
-        const mergedProps = merge({}, params, props);
+        const mergedProps = Object.assign({}, params, props);
         return <RemoteComponent {...mergedProps} ref={ref}/>;
     }));
     CreateWithRemoteLoaderComponent.displayName = `createWithRemoteLoader(${WrappedComponent.displayName || WrappedComponent.name})`;

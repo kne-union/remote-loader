@@ -3,11 +3,11 @@ const {useEffect, useMemo, useState} = React;
 
 const LogNode = ({label}) => {
     useEffect(() => {
-        console.log(`[mount] ${label}`);
+        console.log(`[mount]`);
         return () => {
-            console.log(`[unmount] ${label}`);
+            console.log('[unmount]');
         };
-    }, [label]);
+    }, []);
 
     return <span>{label}</span>;
 };
