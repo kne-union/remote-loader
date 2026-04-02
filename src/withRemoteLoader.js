@@ -7,12 +7,16 @@ const withRemoteLoader = (WrappedComponent) => {
                                             modules = [], remoteError, onLoadComplete, fallback, options, ...props
                                         }, ref) => {
         const {loading, error, remoteModules} = useLoader({modules, onLoadComplete, options});
+
         if (loading) {
-            return fallback || global.fallback;
+            return fallback ?? global.fallback;
         }
+
         if (error) {
-            return remoteError || global.error;
+            const finalError = remoteError ?? global.error;
+            return typeof finalError === 'function' ? finalError(error) : finalError;
         }
+
         return <WrappedComponent {...props} ref={ref} remoteModules={remoteModules}/>;
     });
     RemoteComponent.displayName = `withRemoteLoader(${WrappedComponent.displayName || WrappedComponent.name})`;
