@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_remote_loader_1_4_5=globalThis.webpackChunk_remote_loader_1_4_5||[]).push([[532],{532(e,o,r){r.r(o),r.d(o,{default:()=>a,manifest:()=>l});const a={RemoteLoader:r(9666).A},l={name:"remote-loader",version:"1.4.5","open-version":!0,"public-url":"/remote-loader",modules:[{name:"remote-loader",baseDir:"/home/runner/work/remote-loader/remote-loader",description:"\u52a0\u8f7d\u4e00\u4e2awebpack5\u751f\u6210\u7684\u90a6\u8054\u6a21\u5757",packageName:"@kne/remote-loader"}]}}}]);
+//# sourceMappingURL=532.8c9c6529.chunk.js.map
