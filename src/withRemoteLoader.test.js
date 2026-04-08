@@ -25,7 +25,7 @@ describe('withRemoteLoader', () => {
         expect(screen.getByText('load-failed')).toBeTruthy();
     });
 
-    test('loading 时 fallback 使用 nullish 语义', () => {
+    test('loading 时 remoteFallback 使用 nullish 语义', () => {
         useLoader.mockReturnValue({
             loading: true,
             error: false,
@@ -35,7 +35,7 @@ describe('withRemoteLoader', () => {
         const Wrapped = () => <div>wrapped</div>;
         const RemoteWrapped = withRemoteLoader(Wrapped);
 
-        const {container} = render(<RemoteWrapped modules={['a']} fallback={0}/>);
+        const {container} = render(<RemoteWrapped modules={['a']} remoteFallback={0}/>);
 
         expect(container.textContent).toBe('0');
     });
@@ -63,15 +63,19 @@ describe('withRemoteLoader', () => {
         });
 
         const Wrapped = ({name}) => <div>{name}</div>;
-        const RemoteWrapped = createWithRemoteLoader({modules: ['from-params'], name: 'params-name'})(Wrapped);
+        const RemoteWrapped = createWithRemoteLoader({
+            modules: ['from-params'],
+            name: 'params-name',
+            remoteOptions: {version: '1.0.0'}
+        })(Wrapped);
 
-        render(<RemoteWrapped name="props-name"/>);
+        render(<RemoteWrapped name="props-name" remoteOptions={{version: '2.0.0'}}/>);
 
         expect(screen.getByText('props-name')).toBeTruthy();
         expect(useLoader).toHaveBeenLastCalledWith({
             modules: ['from-params'],
             onLoadComplete: undefined,
-            options: undefined
+            options: {version: '2.0.0'}
         });
     });
 });

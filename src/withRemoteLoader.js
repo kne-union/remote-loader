@@ -4,12 +4,17 @@ import {global} from "./preset";
 
 const withRemoteLoader = (WrappedComponent) => {
     const RemoteComponent = forwardRef(({
-                                            modules = [], remoteError, onLoadComplete, fallback, options, ...props
+                                            modules = [],
+                                            remoteError,
+                                            onLoadComplete,
+                                            remoteFallback,
+                                            remoteOptions,
+                                            ...props
                                         }, ref) => {
-        const {loading, error, remoteModules} = useLoader({modules, onLoadComplete, options});
+        const {loading, error, remoteModules} = useLoader({modules, onLoadComplete, options: remoteOptions});
 
         if (loading) {
-            return fallback ?? global.fallback;
+            return remoteFallback ?? global.fallback;
         }
 
         if (error) {

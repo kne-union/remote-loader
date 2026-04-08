@@ -15,13 +15,17 @@ const loadModule = (token, targetOptions = {}) => {
     const tokenObject = parseToken(token);
 
     const {url, remote} = ((tokenObject, remotes) => {
+        const defaultConfig = remotes['default'] || {};
+        const remoteConfig = tokenObject.remote ? remotes[tokenObject.remote] : null;
+
         const resolveOptions = (options) => {
             const resolvedRemote = get(targetOptions, 'remote', options.remote);
             const resolvedVersion = get(targetOptions, 'version', options.version);
             return {
                 url: get(targetOptions, 'url', options.url),
                 remote: resolvedRemote,
-                version: resolvedVersion
+                version: resolvedVersion,
+                tpl: get(targetOptions, 'tpl', options.tpl)
             };
         };
 
@@ -31,68 +35,71 @@ const loadModule = (token, targetOptions = {}) => {
         };
 
         const getStaticPathWithTpl = (options) => {
-            const resolved = resolveOptions(options);
-            return getStaticPath(Object.assign({}, resolved, {
-                tpl: get(targetOptions, 'tpl', get(remotes, `[${resolved.remote || 'default'}].tpl`))
-            }));
+            return getStaticPath(resolveOptions(options));
         };
 
-        if (tokenObject.url && tokenObject.remote && tokenObject.version) {
-            const options = {url: tokenObject.url, remote: tokenObject.remote, version: tokenObject.version};
-            return {
-                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
+        const getBaseOptions = () => {
+            if (tokenObject.url && tokenObject.remote && tokenObject.version) {
+                return {url: tokenObject.url, remote: tokenObject.remote, version: tokenObject.version};
             }
-        }
-        if (tokenObject.url && tokenObject.remote) {
-            const options = {url: tokenObject.url, remote: tokenObject.remote};
-            return {
-                url: getStaticPathWithTpl(options),
-                remote: getRemoteWithVersion(options)
+
+            if (tokenObject.url && tokenObject.remote) {
+                return {url: tokenObject.url, remote: tokenObject.remote};
             }
-        }
-        if (tokenObject.remote && remotes[tokenObject.remote] && tokenObject.version) {
-            const options = {
-                url: remotes[tokenObject.remote].url,
-                remote: remotes[tokenObject.remote].remote,
-                version: tokenObject.version
-            };
-            return {
-                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
-            };
-        }
 
-        if (tokenObject.remote && remotes[tokenObject.remote] && remotes[tokenObject.remote].defaultVersion) {
-            const options = {
-                url: remotes[tokenObject.remote].url,
-                remote: remotes[tokenObject.remote].remote,
-                version: remotes[tokenObject.remote].defaultVersion
-            };
-            return {
-                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
-            };
-        }
+            if (remoteConfig && tokenObject.version) {
+                return {
+                    url: remoteConfig.url,
+                    remote: remoteConfig.remote,
+                    version: tokenObject.version,
+                    tpl: remoteConfig.tpl
+                };
+            }
 
-        if (tokenObject.remote && remotes[tokenObject.remote]) {
-            const options = {
-                url: remotes[tokenObject.remote].url, remote: remotes[tokenObject.remote].remote
-            };
-            return {
-                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
-            };
-        }
+            if (remoteConfig && remoteConfig.defaultVersion) {
+                return {
+                    url: remoteConfig.url,
+                    remote: remoteConfig.remote,
+                    version: remoteConfig.defaultVersion,
+                    tpl: remoteConfig.tpl
+                };
+            }
 
-        if (remotes['default'].defaultVersion) {
-            const options = {
-                url: remotes['default'].url,
-                remote: remotes['default'].remote,
-                version: remotes['default'].defaultVersion
-            };
-            return {
-                url: getStaticPathWithTpl(options), remote: getRemoteWithVersion(options)
-            };
-        }
+            if (remoteConfig) {
+                return {
+                    url: remoteConfig.url,
+                    remote: remoteConfig.remote,
+                    tpl: remoteConfig.tpl
+                };
+            }
 
-        const options = {url: remotes['default'].url, remote: remotes['default'].remote};
+            if (tokenObject.remote && tokenObject.version) {
+                return {
+                    url: defaultConfig.url,
+                    remote: tokenObject.remote,
+                    version: tokenObject.version,
+                    tpl: defaultConfig.tpl
+                };
+            }
+
+            if (tokenObject.remote) {
+                return {
+                    url: defaultConfig.url,
+                    remote: tokenObject.remote,
+                    version: defaultConfig.defaultVersion,
+                    tpl: defaultConfig.tpl
+                };
+            }
+
+            return {
+                url: defaultConfig.url,
+                remote: defaultConfig.remote,
+                version: defaultConfig.defaultVersion,
+                tpl: defaultConfig.tpl
+            };
+        };
+
+        const options = getBaseOptions();
         return {
             url: getStaticPathWithTpl(options),
             remote: getRemoteWithVersion(options)
