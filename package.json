@@ -1,7 +1,7 @@
 {
   "name": "@kne/remote-loader",
   "author": "linzp",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "加载一个webpack5生成的邦联模块",
   "dependencies": {
     "@kne/ensure-slash": "^0.1.0",
@@ -53,6 +53,10 @@
   "peerDependencies": {
     "react": ">=16.x",
     "react-dom": ">=16.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kne-union/remote-loader.git"
   },
   "husky": {
     "hooks": {

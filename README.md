@@ -67,6 +67,13 @@ const {range} = _;
 
 const BaseExample = () => {
     return <div>
+        <Remote module="components-core/0.4.64:Content"
+                list={[{label: '标题0.4.64', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
+                    label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
+                }, {
+                    label: '标题标题标题',
+                    content: '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容'
+                }]}/>
         <Remote module="components-core:Content"
                 list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
                     label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
@@ -374,9 +381,9 @@ render(<BaseExample/>);
 |------|------|------|--------|------|
 | module | string | 是 | - | 远程模块标记，格式：`[模块地址/remote/version:]模块名[@子模块][.模块属性]` |
 | onLoadComplete | Function | 否 | - | 加载完成回调，参数为已加载模块数组 |
-| fallback | ReactNode | 否 | `preset().fallback` | 加载中展示内容 |
+| remoteFallback | ReactNode | 否 | `preset().fallback` | 加载中展示内容 |
 | remoteError | ReactNode \| Function | 否 | `preset().error` | 加载失败展示内容 |
-| options | Object | 否 | `{}` | 传递给内部 `loadModule` 的覆盖配置 |
+| remoteOptions | Object | 否 | `{}` | 传递给内部 `loadModule` 的覆盖配置 |
 | ...props | any | 否 | - | 透传到远程组件的业务属性（可包含 JSX） |
 
 ### 高阶组件
@@ -389,9 +396,9 @@ render(<BaseExample/>);
 |------|------|------|--------|------|
 | modules | Array<string> | 是 | `[]` | 远程模块标记数组 |
 | onLoadComplete | Function | 否 | - | 加载完成回调 |
-| fallback | ReactNode | 否 | `preset().fallback` | 加载中展示内容 |
+| remoteFallback | ReactNode | 否 | `preset().fallback` | 加载中展示内容 |
 | remoteError | ReactNode \| Function | 否 | `preset().error` | 加载失败展示内容 |
-| options | Object | 否 | `{}` | 传递给内部 `loadModule` 的覆盖配置 |
+| remoteOptions | Object | 否 | `{}` | 传递给内部 `loadModule` 的覆盖配置 |
 | ...props | any | 否 | - | 透传给被包装组件 |
 
 #### createWithRemoteLoader
@@ -400,7 +407,7 @@ render(<BaseExample/>);
 
 | 参数 | 类型 | 必填 | 默认值 | 描述 |
 |------|------|------|--------|------|
-| params | Object | 是 | - | 预设参数（如 `modules`、`fallback` 等） |
+| params | Object | 是 | - | 预设参数（如 `modules`、`remoteFallback`、`remoteOptions` 等） |
 
 返回值：`(WrappedComponent) => ReactComponent`。
 

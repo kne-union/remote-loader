@@ -27,11 +27,22 @@ describe('RemoteLoader', () => {
     });
 
     test('将 module 转换为 modules 数组并透传业务 props', () => {
-        render(<RemoteLoader module="components-core:Content" text="hello" extra="x"/>);
+        const remoteFallback = <div>loading</div>;
+        render(
+            <RemoteLoader
+                module="components-core:Content"
+                text="hello"
+                extra="x"
+                remoteFallback={remoteFallback}
+                remoteOptions={{version: '1.0.0'}}
+            />
+        );
 
         expect(mockCapture.props.modules).toEqual(['components-core:Content']);
         expect(mockCapture.props.text).toBe('hello');
         expect(mockCapture.props.extra).toBe('x');
+        expect(mockCapture.props.remoteFallback).toBe(remoteFallback);
+        expect(mockCapture.props.remoteOptions).toEqual({version: '1.0.0'});
         expect(screen.getByTestId('remote-view').textContent).toBe('hello');
     });
 

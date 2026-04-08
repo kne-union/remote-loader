@@ -3,6 +3,13 @@ const {range} = _;
 
 const BaseExample = () => {
     return <div>
+        <Remote module="components-core/0.4.64:Content"
+                list={[{label: '标题0.4.64', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
+                    label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'
+                }, {
+                    label: '标题标题标题',
+                    content: '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容'
+                }]}/>
         <Remote module="components-core:Content"
                 list={[{label: '标题', content: '内容'}, {label: '标题标题', content: '内容内容'}, {
                     label: '标题标', content: '内容内容内容内容内容内容内容内容内容内容'

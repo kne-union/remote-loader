@@ -419,7 +419,7 @@ test('targetOptions部分字段时其余回退global配置', () => {
             loadComponent: (remote, sharedScope, module, url) => {
                 expect(remote).toBe('global_remote_2_0');
                 expect(module).toBe('./Layout');
-                expect(url).toBe('http://global.example.com/global_remote/2.0/globalRemoteEntry.js');
+                expect(url).toBe('http://global.example.com/global_remote/2.0/dist/globalRemoteEntry.js');
                 return () => {
                     return Promise.resolve({});
                 }
@@ -440,5 +440,59 @@ test('targetOptions部分字段时其余回退global配置', () => {
     const loadModule = require('./loadModule');
     return loadModule.default('', {
         version: '2.0'
+    });
+});
+
+test('仅default配置时可同时加载同一remote的不同版本', () => {
+    jest.resetModules();
+    const preset = require('./preset').default;
+    preset({
+        remotes: {
+            default: {
+                url: 'http://static.example.com', remote: 'global_remote', defaultVersion: '1.0'
+            }
+        }
+    });
+
+    const calls = [];
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                calls.push({remote, module, url});
+                return () => {
+                    return Promise.resolve({default: {}});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return (token) => {
+            const [, version] = token.match(/components-core\/(.*):Content/);
+            return {
+                remote: 'components-core', version, module: {
+                    moduleName: 'Content'
+                }
+            };
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    return Promise.all([
+        loadModule.default('components-core/0.4.64:Content'),
+        loadModule.default('components-core/0.4.65:Content')
+    ]).then(() => {
+        expect(calls).toEqual([
+            {
+                remote: 'components_core_0_4_64',
+                module: './Content',
+                url: 'http://static.example.com/components-core/0.4.64/remoteEntry.js'
+            },
+            {
+                remote: 'components_core_0_4_65',
+                module: './Content',
+                url: 'http://static.example.com/components-core/0.4.65/remoteEntry.js'
+            }
+        ]);
     });
 });
