@@ -1,8 +1,13 @@
 import {getOrLoadRemote} from './getOrLoadRemote';
 
-export const loadComponent = (remote, sharedScope, module, url) => {
+export const loadComponent = (remote, sharedScope, module, url, version) => {
     return async () => {
-        await getOrLoadRemote(remote, sharedScope, url);
+        // Add version to URL for cache busting (only when version exists)
+        const urlWithVersion = version ? 
+            (url.includes('?') ? `${url}&v=${version}` : `${url}?v=${version}`) : 
+            url;
+            
+        await getOrLoadRemote(remote, sharedScope, urlWithVersion);
         const container = window[remote];
 
         if (!container || typeof container.get !== 'function') {

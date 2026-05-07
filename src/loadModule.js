@@ -14,7 +14,7 @@ const loadModule = (token, targetOptions = {}) => {
     const remoteEntryFileName = get(targetOptions, 'remoteEntryFileName', global.remoteEntryFileName);
     const tokenObject = parseToken(token);
 
-    const {url, remote} = ((tokenObject, remotes) => {
+    const {url, remote, version} = ((tokenObject, remotes) => {
         const defaultConfig = remotes['default'] || {};
         const remoteConfig = tokenObject.remote ? remotes[tokenObject.remote] : null;
 
@@ -102,10 +102,11 @@ const loadModule = (token, targetOptions = {}) => {
         const options = getBaseOptions();
         return {
             url: getStaticPathWithTpl(options),
-            remote: getRemoteWithVersion(options)
+            remote: getRemoteWithVersion(options),
+            version: options.version  // Pass version for cache busting
         };
     })(tokenObject, remotes);
-    return loadComponent(formatRemote(remote), "default", './' + tokenObject.module.moduleName, ensureSlash(url) + '/' + remoteEntryFileName)().then((module) => {
+    return loadComponent(formatRemote(remote), "default", './' + tokenObject.module.moduleName, ensureSlash(url) + '/' + remoteEntryFileName, version)().then((module) => {
         const Component = ((tokenModule, module) => {
             if (tokenModule.subModuleName && tokenModule.subModulePropName) {
                 return module[tokenModule.subModuleName][tokenModule.subModulePropName];
