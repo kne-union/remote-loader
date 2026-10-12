@@ -11,4 +11,5 @@ export {loadComponent} from './loadComponent';
 export {default as getPublicPath} from './getPublicPath';
 export {default as getStaticPath} from './getStaticPath';
 export {default as parseToken} from './parseToken';
+export {default as resolveRemoteConfig} from './resolveRemoteConfig';
 export const getGlobal = () => cloneDeep(global);

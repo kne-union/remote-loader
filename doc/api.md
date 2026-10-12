@@ -10,7 +10,7 @@
 | onLoadComplete | Function              | 否  | -                   | 加载完成回调，参数为已加载模块数组                                  |
 | remoteFallback | ReactNode             | 否  | `preset().fallback` | 加载中展示内容                                            |
 | remoteError    | ReactNode \| Function | 否  | `preset().error`    | 加载失败展示内容                                           |
-| remoteOptions  | Object                | 否  | `{}`                | 传递给内部 `loadModule` 的覆盖配置                           |
+| remoteOptions  | Object                | 否  | `{}`                | 传递给内部 `loadModule` 的覆盖配置，其中 `remotes` 与全局配置按 remote 名合并 |
 | ...props       | any                   | 否  | -                   | 透传到远程组件的业务属性（可包含 JSX）                              |
 
 ### 高阶组件
@@ -25,7 +25,7 @@
 | onLoadComplete | Function              | 否  | -                   | 加载完成回调                   |
 | remoteFallback | ReactNode             | 否  | `preset().fallback` | 加载中展示内容                  |
 | remoteError    | ReactNode \| Function | 否  | `preset().error`    | 加载失败展示内容                 |
-| remoteOptions  | Object                | 否  | `{}`                | 传递给内部 `loadModule` 的覆盖配置 |
+| remoteOptions  | Object                | 否  | `{}`                | 传递给内部 `loadModule` 的覆盖配置，其中 `remotes` 与全局配置按 remote 名合并 |
 | ...props       | any                   | 否  | -                   | 透传给被包装组件                 |
 
 #### createWithRemoteLoader
@@ -71,9 +71,11 @@
 | 参数            | 类型     | 必填 | 默认值 | 描述                        |
 |---------------|--------|----|-----|---------------------------|
 | token         | string | 是  | -   | 远程模块标记                    |
-| targetOptions | Object | 否  | -   | 传递给 `getStaticPath` 的覆盖配置 |
+| targetOptions | Object | 否  | -   | 覆盖配置：`remotes` 与全局配置按 remote 名合并；`url`、`remote`、`version`、`tpl`、`remoteEntryFileName` 覆盖解析结果 |
 
 返回值：`Promise<{ default: any }>`。
+
+命中的 remote 配置含 `configUrl` 时，先拉取并解析配置文件（见 `resolveRemoteConfig`），再加载模块；拉取失败时返回的 Promise 被拒绝。
 
 #### safeLoadModule
 
@@ -115,6 +117,25 @@
 
 说明：使用深度合并策略（`lodash/merge`）。
 
+`options.remotes` 中每个 remote 配置的字段：
+
+| 字段             | 类型     | 必填 | 描述                                                         |
+|----------------|--------|----|------------------------------------------------------------|
+| remote         | string | 是  | 远程名，与远程容器名前缀对应                                             |
+| url            | string | 否  | 远程基础地址；配置 `configUrl` 时可省略                                 |
+| tpl            | string | 否  | 路径模板，默认 `{{url}}/{{remote}}/{{version}}`                     |
+| defaultVersion | string | 否  | 默认版本，须与远程容器名中的版本一致                                         |
+| configUrl      | string | 否  | 远程配置文件地址（`@kne/npm-tools entryHtml` 生成的 `remote-module-config.json`），首次加载该 remote 时拉取 |
+
+`configUrl` 配置文件的合并规则：
+
+| 配置文件字段  | 合并到       | 规则                                              |
+|---------|-----------|-------------------------------------------------|
+| url     | url       | 相对路径以 `configUrl` 所在目录解析；为空时使用 `configUrl` 所在目录 |
+| tpl     | tpl       | 为空时使用原配置 `tpl`，再为空时为 `{{url}}`                  |
+| version | defaultVersion | 为空时使用原配置 `defaultVersion`                       |
+| name    | -         | 忽略，`remote` 始终使用原配置                              |
+
 #### getGlobal
 
 获取当前全局配置快照。
@@ -135,6 +156,25 @@
 | options | Object | 否  | -   | 覆盖配置             |
 
 返回值：`string`。
+
+同步读取配置：只配置了 `configUrl` 的 remote 需先调用 `resolveRemoteConfig` 或加载过该 remote 的模块，否则抛出配置无效错误。
+
+#### resolveRemoteConfig
+
+解析 remote 配置，含 `configUrl` 时拉取配置文件并合并。
+
+| 参数      | 类型     | 必填 | 默认值 | 描述                          |
+|---------|--------|----|-----|-----------------------------|
+| name    | string | 是  | -   | `remotes` 中的容器键名            |
+| options | Object | 否  | -   | `{ remotes }`，与全局配置按 remote 名合并后再解析 |
+
+返回值：`Promise<Object>`，解析后的配置 `{ remote, url, tpl, defaultVersion, configUrl }`；无 `configUrl` 时返回合并后的原配置。
+
+| 行为   | 说明                                                                    |
+|------|-----------------------------------------------------------------------|
+| 缓存   | 同一 `configUrl` 只请求一次；请求失败不缓存，下次重试                                    |
+| 写回全局 | `configUrl` 来自全局 `preset` 时，解析结果写回全局配置，供 `getPublicPath` 同步使用；来自 `options.remotes` 时不写回 |
+| 失败   | 抛出 `[remote-loader] Remote config [name] load failed: <configUrl>`     |
 
 #### getStaticPath
 

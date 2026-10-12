@@ -496,3 +496,121 @@ test('仅default配置时可同时加载同一remote的不同版本', () => {
         ]);
     });
 });
+
+test('targetOptions.remotes与global配置合并', () => {
+    jest.resetModules();
+    const preset = require('./preset').default;
+    preset({
+        remotes: {
+            'components-core': {
+                url: 'http://core.example.com', remote: 'components-core', defaultVersion: '0.4.64'
+            }
+        }
+    });
+
+    const calls = [];
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                calls.push({remote, url});
+                return () => {
+                    return Promise.resolve({default: {}});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return (token) => {
+            const [remote, moduleName] = token.split(':');
+            return {remote, module: {moduleName}};
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    const options = {
+        remotes: {
+            'ai-interview': {url: 'http://ai.example.com', remote: 'ai-interview', defaultVersion: '0_1_1', tpl: '{{url}}'}
+        }
+    };
+    return Promise.all([
+        loadModule.default('components-core:Global', options),
+        loadModule.default('ai-interview:ProjectPreview', options)
+    ]).then(() => {
+        expect(calls).toEqual([
+            {remote: 'components_core_0_4_64', url: 'http://core.example.com/components-core/0.4.64/remoteEntry.js'},
+            {remote: 'ai_interview_0_1_1', url: 'http://ai.example.com/remoteEntry.js'}
+        ]);
+    });
+});
+
+test('remote配置configUrl时先拉取配置再加载', () => {
+    jest.resetModules();
+    const fetchMock = jest.fn(() => Promise.resolve({
+        ok: true, status: 200, json: () => Promise.resolve({name: 'ai-interview', url: '', tpl: '{{url}}', version: '0_1_192'})
+    }));
+    const originFetch = window.fetch;
+    window.fetch = fetchMock;
+
+    const calls = [];
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: (remote, sharedScope, module, url) => {
+                calls.push({remote, module, url});
+                return () => {
+                    return Promise.resolve({default: 'Preview Component'});
+                }
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return () => {
+            return {remote: 'ai-interview', module: {moduleName: 'ProjectPreview'}};
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    return loadModule.default('ai-interview:ProjectPreview', {
+        remotes: {
+            'ai-interview': {remote: 'ai-interview', configUrl: 'https://ai.example.com/remote-module-config.json'}
+        }
+    }).then((Module) => {
+        expect(Module.default).toBe('Preview Component');
+        expect(fetchMock).toHaveBeenCalledWith('https://ai.example.com/remote-module-config.json');
+        expect(calls).toEqual([
+            {remote: 'ai_interview_0_1_192', module: './ProjectPreview', url: 'https://ai.example.com/remoteEntry.js'}
+        ]);
+    }).finally(() => {
+        window.fetch = originFetch;
+    });
+});
+
+test('remote配置configUrl拉取失败时loadModule reject', () => {
+    jest.resetModules();
+    const originFetch = window.fetch;
+    window.fetch = jest.fn(() => Promise.reject(new Error('network')));
+
+    jest.mock('./loadComponent.js', () => {
+        return {
+            loadComponent: () => {
+                throw new Error('should not load component');
+            }
+        };
+    });
+
+    jest.mock('./parseToken.js', () => {
+        return () => {
+            return {remote: 'ai-interview', module: {moduleName: 'ProjectPreview'}};
+        };
+    });
+
+    const loadModule = require('./loadModule');
+    return expect(loadModule.default('ai-interview:ProjectPreview', {
+        remotes: {
+            'ai-interview': {remote: 'ai-interview', configUrl: 'https://ai.example.com/remote-module-config.json'}
+        }
+    })).rejects.toThrow('[remote-loader] Remote config [ai-interview] load failed: https://ai.example.com/remote-module-config.json').finally(() => {
+        window.fetch = originFetch;
+    });
+});
