@@ -3,16 +3,35 @@ import parseToken from './parseToken';
 import ensureSlash from '@kne/ensure-slash'
 import {loadComponent} from "./loadComponent";
 import getStaticPath from './getStaticPath';
+import resolveRemoteConfig, {mergeRemotes} from './resolveRemoteConfig';
 import get from 'lodash/get';
 
 const formatRemote = (remote) => {
     return remote.replace(/[-/.@]/g, '_');
 };
 
+const getConfigName = (tokenObject, remotes) => {
+    if (tokenObject.url) {
+        return null;
+    }
+    return tokenObject.remote && remotes[tokenObject.remote] ? tokenObject.remote : 'default';
+};
+
 const loadModule = (token, targetOptions = {}) => {
-    const remotes = get(targetOptions, 'remotes', global.remotes);
-    const remoteEntryFileName = get(targetOptions, 'remoteEntryFileName', global.remoteEntryFileName);
+    const remotes = mergeRemotes(global.remotes, targetOptions.remotes);
     const tokenObject = parseToken(token);
+    const configName = getConfigName(tokenObject, remotes);
+
+    if (configName && remotes[configName] && remotes[configName].configUrl) {
+        return resolveRemoteConfig(configName, targetOptions).then((config) => {
+            return loadRemoteModule(tokenObject, Object.assign({}, remotes, {[configName]: config}), targetOptions);
+        });
+    }
+    return loadRemoteModule(tokenObject, remotes, targetOptions);
+};
+
+const loadRemoteModule = (tokenObject, remotes, targetOptions) => {
+    const remoteEntryFileName = get(targetOptions, 'remoteEntryFileName', global.remoteEntryFileName);
 
     const {url, remote} = ((tokenObject, remotes) => {
         const defaultConfig = remotes['default'] || {};
